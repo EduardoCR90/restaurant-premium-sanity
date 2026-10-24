@@ -16,4 +16,6 @@ export default defineConfig({
   base: '/restaurant-premium-sanity',
   output: 'static',
   trailingSlash: 'always',
+  // Solo enlaces marcados: hover/foco; Astro reduce a tap con ahorro de datos o red lenta.
+  prefetch: { prefetchAll: false, defaultStrategy: 'hover' },
 });

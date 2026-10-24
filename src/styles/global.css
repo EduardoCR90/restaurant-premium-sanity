@@ -817,3 +817,12 @@
     }
   }
 }
+
+/* La API nativa usa pseudoelementos fuera del árbol normal. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}

@@ -4,6 +4,13 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      source:
+        description: Motivo de la reconstrucción
+        required: false
+        default: manual
+        type: choice
+        options: [manual, sanity]
 
 permissions:
   contents: read
@@ -19,7 +26,11 @@ jobs:
     timeout-minutes: 15
     env:
       SITE_URL: https://eduardocr90.github.io
-      # Demo sin credenciales: el cliente y los schemas de Sanity se conservan.
+      SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID || 'hfa8zkyw' }}
+      SANITY_DATASET: ${{ vars.SANITY_DATASET || 'production' }}
+      SANITY_API_READ_TOKEN: ${{ secrets.SANITY_API_READ_TOKEN }}
+      SANITY_USE_MOCK: 'false'
+      SANITY_ALLOW_DEMO_FALLBACK: 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -59,11 +70,11 @@ jobs:
             const response = await fetch(url, { signal: AbortSignal.timeout(30000) });
             assert.equal(response.status, 200, url.href);
             const html = await response.text();
-            assert.ok(html.includes('Salitre') && html.includes('<h1'), `Contenido inesperado: ${url}`);
+            assert.ok(html.includes('<h1') && /<title>[^<]+<\/title>/.test(html), `Contenido inesperado: ${url}`);
             const image = html.match(/property="og:image"\s+content="([^"]+)"/);
-            assert.equal(image?.[1], new URL('og-default.jpg', base).href, `Imagen social: ${url}`);
+            assert.ok(image?.[1]?.startsWith('https://'), `Imagen social: ${url}`);
             assert.ok(html.includes('name="twitter:image"'), `Falta Twitter image: ${url}`);
-            assets.add(image[1]);
+            assets.add(image[1].replaceAll('&amp;', '&'));
             for (const match of html.matchAll(/(?:href|src)="([^"]+)"/g)) {
               const asset = new URL(match[1].replaceAll('&amp;', '&'), url);
               if (asset.origin === url.origin && /\.(css|svg)$/.test(asset.pathname)) assets.add(asset.href);

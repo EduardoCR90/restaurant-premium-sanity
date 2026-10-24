@@ -1,5 +1,6 @@
 // Una instantánea coherente: solo documentos publicados, resueltos en build.
 export const restaurantQuery = `{
+ "publishedDocumentCount": count(*[_type in ["settings", "page", "category", "dish", "story", "gallery"]]),
  "settings": *[_type == "settings" && _id == "restaurant-settings"][0]{name,tagline,concept,address,email,phone,isFictional,reservationUrl,hours[]{days,time}},
  "pages": *[_type == "page"] | order(slug.current asc){"slug":slug.current,eyebrow,title,intro,"image":image{"url":asset->url,alt},seo{title,description,"image":image{"url":asset->url,alt}}},
  "categories": *[_type == "category"] | order(order asc, name asc){_id,name,note},

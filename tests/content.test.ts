@@ -18,3 +18,25 @@ test('impide protocolos inseguros en imágenes y reservas', () => {
  for (const url of ['javascript:alert(1)','http://example.com','data:text/html,hello']) assert.equal(safeUrl.safeParse(url).success,false);
  assert.equal(safeUrl.safeParse('https://reservas.example/mesa').success,true);
 });
+
+test('dataset conectado vacío conserva demo explícita', async () => {
+ const { resolvePublishedContent } = await import('../src/lib/published-content');
+ const result = resolvePublishedContent({ publishedDocumentCount: 0 });
+ assert.equal(result.source, 'demo');
+ assert.equal(result.cmsStatus, 'empty');
+ assert.equal(result.content.dishes.length, mockContent.dishes.length);
+});
+test('contenido publicado se consume y conserva cambios reales', async () => {
+ const { resolvePublishedContent } = await import('../src/lib/published-content');
+ const result = resolvePublishedContent({ ...mockContent, publishedDocumentCount: 22, dishes: mockContent.dishes.map((dish, i) => i === 0 ? { ...dish, name: 'Plato editado en Sanity', price: 21 } : dish) });
+ assert.equal(result.source, 'sanity');
+ assert.equal(result.content.dishes[0].name, 'Plato editado en Sanity');
+ assert.equal(result.content.dishes[0].price, 21);
+});
+test('publicación incompleta, duplicada o con referencia rota no oculta errores con demo', async () => {
+ const { resolvePublishedContent } = await import('../src/lib/published-content');
+ assert.throws(() => resolvePublishedContent({ publishedDocumentCount: 1 }));
+ assert.throws(() => resolvePublishedContent({ ...mockContent, publishedDocumentCount: 22, pages: [...mockContent.pages, mockContent.pages[0]] }));
+ assert.throws(() => resolvePublishedContent({ ...mockContent, publishedDocumentCount: 22, categories: [] }));
+ assert.throws(() => resolvePublishedContent({ publishedDocumentCount: -1 }));
+});

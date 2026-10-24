@@ -4,7 +4,7 @@ Web editorial para un restaurante **ficticio** en Tenerife. Astro estático, Typ
 
 ## Estado de esta entrega
 
-Implementación fuente completa. El entorno no pudo conectar con el proxy al consultar GitHub/npm y no tiene las dependencias en caché. La primera ejecución de GitHub Actions ha superado Astro/TypeScript (0 errores y avisos), tres tests, build estática de las cuatro páginas y compilación de Studio. Las revisiones posteriores vuelven a pasar por CI. No hay credenciales de Sanity; **la conexión a un dataset real no se ha probado**. La demo está publicada en GitHub Pages; su estado se comprueba en el workflow de despliegue. Consulta `VALIDATION.md` para los resultados verificables y las comprobaciones pendientes.
+Implementación fuente completa. El entorno no pudo conectar con el proxy al consultar GitHub/npm y no tiene las dependencias en caché. La primera ejecución de GitHub Actions ha superado Astro/TypeScript (0 errores y avisos), tres tests, build estática de las cuatro páginas y compilación de Studio. Las revisiones posteriores vuelven a pasar por CI. El proyecto hfa8zkyw/production responde correctamente sin token de lectura y está vacío. Se ha verificado lectura real y build con fallback; todavía no se ha verificado una publicación de contenido real ni el webhook. La demo está publicada en GitHub Pages; su estado se comprueba en el workflow de despliegue. Consulta `VALIDATION.md` para los resultados verificables y las comprobaciones pendientes.
 
 ## Instalación desde otro ordenador
 
@@ -20,7 +20,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Abre http://localhost:4321/restaurant-premium-sanity/. Sin projectId de Sanity el sitio funciona con `src/lib/mock.ts` y muestra un aviso de demostración. Las fotos de ejemplo usan Unsplash y necesitan conexión del navegador; los textos y carta no dependen de esa conexión. Son fotografías ambientales, no retratos de los platos o personas ficticias. Antes de un uso comercial, sustituye y verifica las licencias de todas las fotos.
+Abre http://localhost:4321/restaurant-premium-sanity/. Por defecto consulta hfa8zkyw/production. Mientras el dataset esté vacío, usa `src/lib/mock.ts` con aviso de demostración. SANITY_USE_MOCK=true permite trabajar sin conexión. Las fotos de ejemplo usan Unsplash y necesitan conexión del navegador; los textos y carta no dependen de esa conexión. Son fotografías ambientales, no retratos de los platos o personas ficticias. Antes de un uso comercial, sustituye y verifica las licencias de todas las fotos.
 
 Se incluye `package-lock.json`, recuperado de la instalación validada en GitHub Actions. Usa `npm ci` para reproducirla. CI conserva durante siete días el artefacto `salitre-static-review` con el HTML, lock, auditoría y capturas de revisión cuando Chrome está disponible. Las capturas no publican la web.
 
@@ -30,8 +30,7 @@ npm run check         # Astro/TypeScript + configuración y schemas Studio
 npm test              # Contratos, demo y seguridad de URLs
 npm run build         # HTML estático en dist/
 npm run preview       # Build local en http://localhost:4321/restaurant-premium-sanity/
-npm run studio        # Studio local en http://localhost:3333
-npm run studio:build  # Compila Studio en studio-dist/ (requiere sus IDs públicos)
+npm run check:cms     # Lectura real: valida contenido o detecta dataset vacío
 ```
 
 ## Arquitectura
@@ -44,48 +43,23 @@ src/
   styles/         global.css: tokens, capas CSS y responsive
   lib/            content.ts, queries.ts, mock.ts
   types/          Contratos Zod y tipos inferidos
-sanity/
-  schemaTypes/    Objetos de imagen/SEO y documentos del restaurante
-  tsconfig.json   Comprobación estricta de Studio
 scripts/          Exportador NDJSON de contenido inicial
 public/           Favicon
 tests/           Validación de contratos y URLs
 .github/workflows/validate.yml, deploy.yml
-sanity.config.ts, sanity.cli.ts
 ```
+
+El Studio se ha trasladado, conservando sus esquemas, a [studio-salitre-restaurant](https://github.com/EduardoCR90/studio-salitre-restaurant), con su propio package.json, lock y CI. Es la fuente de verdad del modelo; no está incrustado en Astro ni duplicado aquí.
 
 `getContent()` obtiene una instantánea reutilizada en build. El cliente oficial ejecuta una consulta GROQ con referencias resueltas, perspectiva `published`, sin CDN y sin reintentos. Zod valida la respuesta; además se comprueba que haya exactamente una página por ruta y que cada plato tenga categoría. Los componentes reciben datos tipados y nunca conocen tokens ni SDKs. El frontend solo añade el ClientRouter y prefetch nativos de Astro para navegar; no monta React ni islas del CMS.
 
-El modo demo solo se usa sin proyecto configurado o al activar expresamente `SANITY_ALLOW_DEMO_FALLBACK=true`. Un CMS configurado con fallos de conexión o contenido inválido **detiene la build por defecto**, conservando así la última versión publicada en un hosting con despliegues atómicos. El error no vuelca tokens ni respuesta del SDK. Con fallback se muestra un aviso visible de demo. Una categoría sin platos o galería vacía tiene un estado vacío. Los platos no disponibles se muestran identificados en carta y se excluyen de destacados.
+Un dataset accesible sin documentos publicados utiliza demo automáticamente. Si hay documentos publicados, se valida el conjunto completo: configuración, historia, cuatro páginas únicas y referencias válidas. Una publicación incompleta o un error de red detiene la build y conserva el último despliegue correcto; no se mezcla contenido real con datos mock silenciosamente. SANITY_ALLOW_DEMO_FALLBACK=true es una alternativa explícita para incidencias, y SANITY_USE_MOCK=true desactiva el acceso remoto para desarrollo/CI.
 
-## Configurar Sanity, paso a paso
+## Sanity: configuración y edición desde el navegador
 
-1. Crea una cuenta y un proyecto en https://www.sanity.io/manage. Anota el **project ID**; crea un dataset `production`. Un dataset público permite leer contenido sin token; un dataset privado requiere un token de lectura.
-2. Copia `.env.example` a `.env` y configura:
+Proyecto existente **Salitre-restaurant**, ID **hfa8zkyw**, dataset **production**. La [guía de configuración](docs/sanity-setup.md) explica las variables, el Studio independiente, la primera publicación de contenido y el webhook de reconstrucción de GitHub Pages. No necesitas instalar nada en tu ordenador: Studio tiene un workflow manual de publicación en su repositorio. Hace falta configurar allí un secreto de automatización Sanity autorizado; no se solicita ni almacena en el código.
 
-```dotenv
-SITE_URL=https://eduardocr90.github.io
-SANITY_PROJECT_ID=tu_project_id
-SANITY_DATASET=production
-SANITY_STUDIO_PROJECT_ID=tu_project_id
-SANITY_STUDIO_DATASET=production
-SANITY_ALLOW_DEMO_FALLBACK=false
-```
-
-3. Solo si el dataset es privado, añade `SANITY_API_READ_TOKEN` con permisos mínimos de lectura a `.env` y a los secretos del proveedor de build. No lo uses en Studio ni con prefijo `PUBLIC_` o `SANITY_STUDIO_`. El ID y dataset son públicos; el token no lo es.
-4. Ejecuta `npx sanity login` en tu equipo y `npm run studio`. El CLI carga el `.env` de la raíz. Si Sanity lo requiere, añade `http://localhost:3333` a los orígenes CORS del proyecto con credenciales para Studio. Astro consulta en build y no necesita CORS del navegador. No uses orígenes `*` con credenciales.
-5. En Studio rellena los apartados singleton **Configuración y contacto**, **Historia y chef** y **Galería editorial**. Sus IDs fijos están definidos en `sanity.config.ts`. Crea cuatro páginas con los slugs `inicio`, `carta`, `restaurante` y `reservas`, sus textos y SEO. Publica todos los documentos. No hay páginas CMS arbitrarias: las cuatro rutas tienen composiciones propias.
-6. Crea categorías con nombre y orden (entrantes, principales, postres y bebidas). Crea platos, selecciona una referencia a una categoría publicada, precio en euros, descripción, alérgenos, disponibilidad y orden. Marca hasta tres platos disponibles como destacados. Publica categoría y plato. Sube imágenes y escribe un texto alternativo; Studio permite ordenar la galería.
-7. Para empezar con todos los textos ficticios puedes ejecutar:
-
-```bash
-npm run seed:export
-npx sanity dataset import .sanity/seed.ndjson production
-```
-
-El primer comando solo genera un archivo local ignorado por Git. **El segundo escribe en el dataset seleccionado**: úsalo en un dataset nuevo y dedicado a esta demo. No uses `--replace` en un dataset existente; los IDs coincidentes pueden generar conflictos. Se importan documentos publicados, contactos ficticios y todas las categorías/platos. Las imágenes no se importan: súbelas en Studio y asígnalas a páginas, historia, platos y galería. El sitio admite imágenes ausentes. La demo local conserva sus fotos de Unsplash.
-
-8. Ejecuta `npm run build` y `npm run preview`. El aviso de fuente demo desaparece al consumir CMS válido; la indicación de restaurante ficticio y `noindex` se mantienen mientras `isFictional` sea verdadero. Para probar cambios en desarrollo, reinicia Astro tras publicar: la instantánea está cacheada en el proceso. En producción hace falta una nueva build; publicar en Sanity no cambia HTML ya generado.
+Se reutilizan los tipos settings, page, category, dish, story, gallery, editorialImage y seo. Los IDs singleton se conservan. Los datos de ejemplo y el exportador NDJSON siguen en Astro; no se ha importado ni sustituido contenido del dataset. Las fotografías deben subirse desde Studio cuando crees el contenido real.
 
 ## SEO, imágenes y reservas
 
@@ -95,19 +69,13 @@ Metadatos por página, canonical con `SITE_URL`, Open Graph, Twitter card, idiom
 
 El botón de reservas solo aparece con fuente Sanity, `isFictional=false` y una URL HTTPS de proveedor real. El enlace abre el proveedor; no procesa pagos ni guarda datos. Sin proveedor hay un mensaje explícito, sin formulario falso. Los datos de contacto demo no generan enlaces de teléfono ni correo.
 
-## Webhooks y futura publicación
+## Publicar contenido y reconstruir GitHub Pages
 
-La demo se prepara para GitHub Pages mediante el workflow descrito abajo. No se configura SiteGround.
-
-1. Cuando elijas un hosting de builds estáticas, configura `npm run build`, salida `dist/`, Node 22 y variables de entorno en su gestor de secretos.
-2. Crea un deploy hook en ese proveedor y conserva su URL como secreto; no la incluyas en el repositorio ni en el frontend.
-3. En Sanity Manage → API → Webhooks, crea un webhook para el dataset `production`, método POST, URL del deploy hook y eventos create/update/delete. Usa el filtro `!(_id in path("drafts.**")) && _type in ["settings", "page", "category", "dish", "story", "gallery", "sanity.imageAsset"]`.
-4. Si usas un endpoint propio, configura un secreto y verifica la firma de Sanity antes de disparar la build. Para hooks del proveedor sigue su mecanismo de autenticación; no afirmes validar firmas si el hook no lo permite.
-5. Publica un cambio de prueba y verifica tanto la entrega del webhook como la build y el nuevo HTML. Este circuito queda preparado documentalmente, **no probado ni configurado en un proveedor**.
+El workflow de Pages consulta contenido publicado de Sanity en cada build. Publicar contenido no cambia HTML ya generado: configura el webhook descrito en [docs/sanity-setup.md](docs/sanity-setup.md). Usa el endpoint workflow_dispatch con Authorization privado y permisos Actions:write limitados a este repositorio, sin un servidor adicional. El webhook no está activado ni probado todavía. No se configura SiteGround.
 
 ## Validación y CI
 
-GitHub Actions valida PRs y pushes a main: instalación, Astro/TypeScript, tests, build demo y compilación de Studio con un ID de ejemplo (sin conexiones reales). No despliega. También exporta la semilla y adjunta un informe `npm audit`; sus avisos deben revisarse antes de producción. El pipeline no acredita la conexión a un CMS real.
+GitHub Actions valida PRs y pushes a main: instalación, Astro/TypeScript, tests, build demo y pruebas de navegación. El Studio tiene CI y compilación propios en su repositorio. No despliega. También exporta la semilla y adjunta un informe `npm audit`; sus avisos deben revisarse antes de producción. El pipeline no acredita la conexión a un CMS real.
 
 Pendiente en un equipo con acceso npm: instalar con npm ci y repetir los comandos si se modifica el código; inspeccionar las cuatro páginas a 375, 768 y 1440 px; probar teclado, contraste y reducción de movimiento; Lighthouse/Core Web Vitals; probar dataset público/privado, errores de contenido y webhook con un proyecto Sanity real. No se atribuyen resultados ni métricas que no se han medido.
 
@@ -117,7 +85,7 @@ URL objetivo: https://eduardocr90.github.io/restaurant-premium-sanity/ . La pres
 
 Configuración de Astro: salida estática, `site: https://eduardocr90.github.io`, `base: /restaurant-premium-sanity` y barra final en las rutas. `src/lib/paths.ts` aplica `import.meta.env.BASE_URL` a enlaces internos y favicon; Astro aplica la base al CSS compilado. Las fotos HTTPS de Unsplash/Sanity y las fuentes del sistema conservan sus ubicaciones. Los canonical y Open Graph incluyen la ruta base. La demo mantiene noindex y las reservas inactivas.
 
-`.github/workflows/deploy.yml` sigue las guías oficiales de [Astro](https://docs.astro.build/en/guides/deploy/github/) y [GitHub](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages): `withastro/action@v6` instala, comprueba, genera y sube el artefacto; `actions/deploy-pages@v5` publica únicamente desde main con permisos Pages/OIDC y el entorno github-pages. La acción oficial detecta package-lock.json. No se proporcionan variables ni secretos Sanity al workflow demo, por lo que usa los datos de ejemplo. La integración CMS sigue disponible en desarrollo y futuras builds configuradas.
+`.github/workflows/deploy.yml` sigue las guías oficiales de [Astro](https://docs.astro.build/en/guides/deploy/github/) y [GitHub](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages): `withastro/action@v6` instala, comprueba, genera y sube el artefacto; `actions/deploy-pages@v5` publica únicamente desde main con permisos Pages/OIDC y el entorno github-pages. La acción oficial detecta package-lock.json. El workflow consulta hfa8zkyw/production, con token de lectura opcional únicamente en los secretos de build. El dataset vacío mantiene la demo; cuando el contenido publicado esté completo se utiliza Sanity.
 
 Configuración manual en GitHub:
 

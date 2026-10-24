@@ -12,19 +12,19 @@
     "build": "astro build",
     "preview": "astro preview",
     "studio": "sanity dev --host 127.0.0.1",
-    "studio:build": "sanity build studio-dist",
+    "studio:build": "sanity build studio-dist --yes",
     "test": "node --import tsx --test tests/*.test.ts",
     "seed:export": "tsx scripts/export-seed.ts"
   },
   "dependencies": {
-    "astro": "^5.13.0",
+    "astro": "^7.4.1",
     "@sanity/client": "^7.11.0",
-    "zod": "^3.25.0"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "typescript": "^5.9.2",
-    "sanity": "^4.10.0",
+    "sanity": "^6.20.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "@types/react": "^19.1.0",

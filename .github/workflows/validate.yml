@@ -33,6 +33,7 @@ jobs:
             audit.json
           retention-days: 7
       - run: npm run studio:build
+      - run: test -f studio-dist/index.html
         env:
           SANITY_STUDIO_PROJECT_ID: abc123de
           SANITY_STUDIO_DATASET: production

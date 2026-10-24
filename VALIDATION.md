@@ -30,3 +30,9 @@ La ejecución [40090623135](https://github.com/EduardoCR90/restaurant-premium-sa
 Auditoría completa de ese lock: 0 críticas, 3 altas y 10 moderadas. Los avisos restantes afectan a herramientas transitivas de Sanity (js-yaml, smol-toml, undici y uuid, más sus cadenas). No se ha aplicado un downgrade mayor automático de Sanity ni overrides que cambien APIs sin probar. Deben revisarse antes de publicar Studio; la auditoría de dependencias de producción se comprueba separadamente en el workflow final.
 
 Se inspeccionó el HTML construido descargado de CI: un h1 por página, enlaces locales y anclas válidos, alt y dimensiones en imágenes y ausencia de scripts del cliente. La terminal bloquea sockets locales y Chromium (setsockopt: Operation not permitted), por lo que la inspección visual local no se pudo realizar. CI intenta adjuntar capturas de las cuatro páginas para revisión sin desplegar; si falla ese paso opcional, no acredita una revisión visual. Lighthouse y prueba de CMS real siguen pendientes.
+
+## Preparación de GitHub Pages
+
+Se conserva todo el proyecto existente y package-lock.json. Se configura site/base para la URL solicitada, se reemplazan enlaces absolutos y favicon mediante BASE_URL y se añade deploy.yml con la acción oficial de Astro. Se añade `npm run check:build` para comprobar el HTML real generado bajo la subruta, no solo los fuentes. El workflow de validación usa esa misma base en sus capturas y limita el tiempo de Chrome.
+
+En la terminal, `node --check astro.config.mjs`, `node --check scripts/check-build.mjs` y `git diff --check` pasan. `npm run build` sigue bloqueado localmente por dependencias ausentes y el proxy inaccesible. Se ejecutará en Actions para validar la revisión de Pages. La publicación solo se considera verificada tras comprobar el job deploy y una respuesta pública válida; puede requerir activar Pages manualmente en Settings.

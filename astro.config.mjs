@@ -8,11 +8,12 @@ try {
   if (error.code !== 'ENOENT') throw error;
 }
 
-const site = process.env.SITE_URL || 'https://salitre.example';
+const site = process.env.SITE_URL || 'https://eduardocr90.github.io';
 if (!site.startsWith('https://')) throw new Error('SITE_URL debe ser una URL HTTPS absoluta');
 
 export default defineConfig({
   site,
+  base: '/restaurant-premium-sanity',
   output: 'static',
   trailingSlash: 'always',
 });

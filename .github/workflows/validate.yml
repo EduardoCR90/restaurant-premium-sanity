@@ -19,19 +19,22 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - run: npm run check:build
       - run: npm run seed:export
       - name: Capture local build previews
         continue-on-error: true
         run: |
           mkdir -p review
-          python3 -m http.server 4321 --bind 127.0.0.1 --directory dist > /tmp/salitre-preview.log 2>&1 &
+          mkdir -p /tmp/salitre-base-preview
+          ln -s "$PWD/dist" /tmp/salitre-base-preview/restaurant-premium-sanity
+          python3 -m http.server 4321 --bind 127.0.0.1 --directory /tmp/salitre-base-preview > /tmp/salitre-preview.log 2>&1 &
           preview_pid=$!
           trap 'kill "$preview_pid"' EXIT
           for route in inicio carta restaurante reservas; do
             route_path="$route/"
             if [ "$route" = inicio ]; then route_path=""; fi
-            google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-desktop.png" --window-size=1440,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/$route_path"
-            google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-mobile.png" --window-size=390,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/$route_path"
+            timeout 30s google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-desktop.png" --window-size=1440,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/restaurant-premium-sanity/$route_path"
+            timeout 30s google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-mobile.png" --window-size=390,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/restaurant-premium-sanity/$route_path"
           done
       - name: Dependency audit report
         run: |

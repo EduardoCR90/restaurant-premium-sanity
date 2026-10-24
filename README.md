@@ -20,7 +20,7 @@ cp .env.example .env
 npm run dev
 ```
 
-Abre http://localhost:4321. Sin projectId de Sanity el sitio funciona con `src/lib/mock.ts` y muestra un aviso de demostración. Las fotos de ejemplo usan Unsplash y necesitan conexión del navegador; los textos y carta no dependen de esa conexión. Son fotografías ambientales, no retratos de los platos o personas ficticias. Antes de un uso comercial, sustituye y verifica las licencias de todas las fotos.
+Abre http://localhost:4321/restaurant-premium-sanity/. Sin projectId de Sanity el sitio funciona con `src/lib/mock.ts` y muestra un aviso de demostración. Las fotos de ejemplo usan Unsplash y necesitan conexión del navegador; los textos y carta no dependen de esa conexión. Son fotografías ambientales, no retratos de los platos o personas ficticias. Antes de un uso comercial, sustituye y verifica las licencias de todas las fotos.
 
 Se incluye `package-lock.json`, recuperado de la instalación validada en GitHub Actions. Usa `npm ci` para reproducirla. CI conserva durante siete días el artefacto `salitre-static-review` con el HTML, lock, auditoría y capturas de revisión cuando Chrome está disponible. Las capturas no publican la web.
 
@@ -29,7 +29,7 @@ npm run dev           # Astro local
 npm run check         # Astro/TypeScript + configuración y schemas Studio
 npm test              # Contratos, demo y seguridad de URLs
 npm run build         # HTML estático en dist/
-npm run preview       # Build local en http://localhost:4321
+npm run preview       # Build local en http://localhost:4321/restaurant-premium-sanity/
 npm run studio        # Studio local en http://localhost:3333
 npm run studio:build  # Compila Studio en studio-dist/ (requiere sus IDs públicos)
 ```
@@ -50,7 +50,7 @@ sanity/
 scripts/          Exportador NDJSON de contenido inicial
 public/           Favicon
 tests/           Validación de contratos y URLs
-.github/workflows/validate.yml
+.github/workflows/validate.yml, deploy.yml
 sanity.config.ts, sanity.cli.ts
 ```
 
@@ -64,7 +64,7 @@ El modo demo solo se usa sin proyecto configurado o al activar expresamente `SAN
 2. Copia `.env.example` a `.env` y configura:
 
 ```dotenv
-SITE_URL=https://tu-dominio-real.com
+SITE_URL=https://eduardocr90.github.io
 SANITY_PROJECT_ID=tu_project_id
 SANITY_DATASET=production
 SANITY_STUDIO_PROJECT_ID=tu_project_id
@@ -97,7 +97,7 @@ El botón de reservas solo aparece con fuente Sanity, `isFictional=false` y una 
 
 ## Webhooks y futura publicación
 
-No se configura SiteGround ni se publica nada en esta fase.
+La demo se prepara para GitHub Pages mediante el workflow descrito abajo. No se configura SiteGround.
 
 1. Cuando elijas un hosting de builds estáticas, configura `npm run build`, salida `dist/`, Node 22 y variables de entorno en su gestor de secretos.
 2. Crea un deploy hook en ese proveedor y conserva su URL como secreto; no la incluyas en el repositorio ni en el frontend.
@@ -110,3 +110,24 @@ No se configura SiteGround ni se publica nada en esta fase.
 GitHub Actions valida PRs y pushes a main: instalación, Astro/TypeScript, tests, build demo y compilación de Studio con un ID de ejemplo (sin conexiones reales). No despliega. También exporta la semilla y adjunta un informe `npm audit`; sus avisos deben revisarse antes de producción. El pipeline no acredita la conexión a un CMS real.
 
 Pendiente en un equipo con acceso npm: instalar con npm ci y repetir los comandos si se modifica el código; inspeccionar las cuatro páginas a 375, 768 y 1440 px; probar teclado, contraste y reducción de movimiento; Lighthouse/Core Web Vitals; probar dataset público/privado, errores de contenido y webhook con un proyecto Sanity real. No se atribuyen resultados ni métricas que no se han medido.
+
+## Demo en GitHub Pages
+
+URL objetivo: https://eduardocr90.github.io/restaurant-premium-sanity/ . La presencia del workflow no acredita una publicación: comprueba que el job `deploy` termine correctamente y abre la URL pública.
+
+Configuración de Astro: salida estática, `site: https://eduardocr90.github.io`, `base: /restaurant-premium-sanity` y barra final en las rutas. `src/lib/paths.ts` aplica `import.meta.env.BASE_URL` a enlaces internos y favicon; Astro aplica la base al CSS compilado. Las fotos HTTPS de Unsplash/Sanity y las fuentes del sistema conservan sus ubicaciones. Los canonical y Open Graph incluyen la ruta base. La demo mantiene noindex y las reservas inactivas.
+
+`.github/workflows/deploy.yml` sigue las guías oficiales de [Astro](https://docs.astro.build/en/guides/deploy/github/) y [GitHub](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages): `withastro/action@v6` instala, comprueba, genera y sube el artefacto; `actions/deploy-pages@v5` publica únicamente desde main con permisos Pages/OIDC y el entorno github-pages. La acción oficial detecta package-lock.json. No se proporcionan variables ni secretos Sanity al workflow demo, por lo que usa los datos de ejemplo. La integración CMS sigue disponible en desarrollo y futuras builds configuradas.
+
+Configuración manual en GitHub:
+
+1. Integra la PR que contiene el proyecto y este workflow en main cuando esté aprobada.
+2. En **Settings → Pages → Build and deployment → Source**, selecciona **GitHub Actions**. No selecciones una rama de publicación ni añadas un CNAME.
+3. Si el repositorio es privado, comprueba que tu plan permita Pages en repositorios privados. No se cambia la visibilidad del repositorio automáticamente.
+4. Comprueba que Actions permita las acciones oficiales y que el entorno `github-pages` permita desplegar desde main. Si tiene revisores obligatorios, aprueba el despliegue en GitHub.
+5. La integración en main inicia el workflow. Si has activado Pages después, ejecuta **Actions → Deploy demo to GitHub Pages → Run workflow → main**, o reejecuta el job fallido de despliegue.
+6. Comprueba el resultado de `deploy`, abre la URL y navega a carta, restaurante y reservas desde el móvil. Las fotografías remotas requieren acceso a sus CDN.
+
+Sin tocar credenciales, puedes reproducir la build con `npm ci`, `npm run build`, `npm run check:build` y `npm run preview`. La comprobación de build verifica rutas, recursos locales, anclas, navegación activa y canonical de las cuatro páginas bajo la base. CI sirve las capturas bajo la misma subruta y limita cada ejecución de Chrome a 30 segundos.
+
+Para mover el proyecto en el futuro a un dominio sin subcarpeta, cambia site/base en astro.config.mjs y actualiza la comprobación de build; no elimines manualmente los prefijos de cada componente.

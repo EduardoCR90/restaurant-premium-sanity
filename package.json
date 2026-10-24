@@ -14,7 +14,8 @@
     "studio": "sanity dev --host 127.0.0.1",
     "studio:build": "sanity build studio-dist --yes",
     "test": "node --import tsx --test tests/*.test.ts",
-    "seed:export": "tsx scripts/export-seed.ts"
+    "seed:export": "tsx scripts/export-seed.ts",
+    "check:build": "node scripts/check-build.mjs"
   },
   "dependencies": {
     "astro": "^7.4.1",

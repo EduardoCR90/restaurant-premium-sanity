@@ -1,0 +1,47 @@
+name: Deploy demo to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SITE_URL: https://eduardocr90.github.io
+      # Demo sin credenciales: el cliente y los schemas de Sanity se conservan.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Install, validate, build and upload with the official Astro action
+        uses: withastro/action@v6
+        with:
+          node-version: 22
+          build-cmd: npm run check && npm test && npm run build && npm run check:build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Check Pages configuration
+        uses: actions/configure-pages@v5
+      - name: Deploy static demo
+        id: deployment
+        uses: actions/deploy-pages@v5

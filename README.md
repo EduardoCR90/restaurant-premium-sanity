@@ -30,7 +30,7 @@ npm test              # Contratos, demo y seguridad de URLs
 npm run build         # HTML estático en dist/
 npm run preview       # Build local en http://localhost:4321
 npm run studio        # Studio local en http://localhost:3333
-npm run studio:build  # Compila Studio (requiere sus identificadores públicos)
+npm run studio:build  # Compila Studio en studio-dist/ (requiere sus IDs públicos)
 ```
 
 ## Arquitectura
@@ -88,7 +88,7 @@ El primer comando solo genera un archivo local ignorado por Git. **El segundo es
 
 ## SEO, imágenes y reservas
 
-Metadatos por página, canonical con `SITE_URL`, Open Graph, Twitter card, idioma español y robots.txt. La demo y el restaurante ficticio incluyen `noindex, follow`. No se añaden datos estructurados de un negocio real a este ejemplo. Antes de publicar, sustituye dominio, identidad y contactos; revisa toda la información y desactiva `isFictional` solo cuando represente un negocio real.
+Metadatos por página, canonical con `SITE_URL`, Open Graph, Twitter card, idioma español y robots.txt. El dominio .example, la demo y el restaurante ficticio incluyen `noindex, follow`. No se añaden datos estructurados de un negocio real a este ejemplo. Antes de publicar, sustituye dominio, identidad y contactos; revisa toda la información y desactiva `isFictional` solo cuando represente un negocio real.
 
 `Photo.astro` genera srcsets con tamaños 480–2400 para Unsplash y el CDN de Sanity, usa `auto=format`, dimensiones HTML, lazy loading y prioridad alta para la imagen principal. Los assets originales de Sanity se sirven desde su CDN; no se descargan durante la build. Hay espacios reservados para las imágenes, estilos responsive, foco visible, salto al contenido y `prefers-reduced-motion`. La serif usa Georgia y fuentes del sistema: sin descargas externas de fuentes. El hotspot puede editarse en Studio pero esta versión usa recorte centrado CSS, no coordenadas de hotspot.
 

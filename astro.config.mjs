@@ -1,5 +1,18 @@
 import { defineConfig } from 'astro/config';
+import { loadEnvFile } from 'node:process';
+
+// Astro no carga .env automáticamente en process.env al evaluar este archivo.
+try {
+  loadEnvFile('.env');
+} catch (error) {
+  if (error.code !== 'ENOENT') throw error;
+}
+
+const site = process.env.SITE_URL || 'https://salitre.example';
+if (!site.startsWith('https://')) throw new Error('SITE_URL debe ser una URL HTTPS absoluta');
+
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://salitre.example',
-  output: 'static', trailingSlash: 'always',
+  site,
+  output: 'static',
+  trailingSlash: 'always',
 });

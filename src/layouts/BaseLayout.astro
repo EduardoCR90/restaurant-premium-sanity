@@ -9,7 +9,7 @@ const { settings } = data.content;
 const page = data.content.pages.find(page => page.slug === slug)!;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = page.seo.image?.url || page.image?.url;
-const demo = data.source === 'demo' || settings.isFictional;
+const demo = data.source === 'demo' || settings.isFictional || canonical.hostname.endsWith('.example');
 ---
 <!doctype html>
 <html lang="es"><head>

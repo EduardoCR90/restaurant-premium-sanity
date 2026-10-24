@@ -21,4 +21,12 @@ La compilación inicial de Studio detectó styled-components ausente y lo instal
 
 ## Pendiente
 
-Instalación con npm y generación de package-lock.json; resultados de CI; comprobación visual de las cuatro páginas con fotos cargadas en móvil y escritorio; teclado, contraste y lector de pantalla; Lighthouse/Core Web Vitals. Configuración y verificación real de Sanity, importación de ejemplo, subida de fotos y ciclo publicar → reconstruir. Integración del proveedor de reservas y futura elección de hosting. SiteGround no se ha configurado ni se ha desplegado.
+Reproducir instalación local con npm ci; comprobación visual de las cuatro páginas con fotos cargadas en móvil y escritorio; teclado, contraste y lector de pantalla; Lighthouse/Core Web Vitals. Configuración y verificación real de Sanity, importación de ejemplo, subida de fotos y ciclo publicar → reconstruir. Integración del proveedor de reservas y futura elección de hosting. SiteGround no se ha configurado ni se ha desplegado.
+
+## Actualización verificada
+
+La ejecución [40090623135](https://github.com/EduardoCR90/restaurant-premium-sanity/actions/runs/40090623135) pasó con Astro 7.4.1, Sanity 6.20.0 y Zod 4.6.7: tipos, tres tests, cuatro páginas estáticas, exportador de semilla, build no interactiva de Studio e index.html presente. Se recuperó el package-lock.json de su artefacto y se fijó Node >=22.22 según los engines reales de Astro. CI usa ahora npm ci y caché npm.
+
+Auditoría completa de ese lock: 0 críticas, 3 altas y 10 moderadas. Los avisos restantes afectan a herramientas transitivas de Sanity (js-yaml, smol-toml, undici y uuid, más sus cadenas). No se ha aplicado un downgrade mayor automático de Sanity ni overrides que cambien APIs sin probar. Deben revisarse antes de publicar Studio; la auditoría de dependencias de producción se comprueba separadamente en el workflow final.
+
+Se inspeccionó el HTML construido descargado de CI: un h1 por página, enlaces locales y anclas válidos, alt y dimensiones en imágenes y ausencia de scripts del cliente. La terminal bloquea sockets locales y Chromium (setsockopt: Operation not permitted), por lo que la inspección visual local no se pudo realizar. CI intenta adjuntar capturas de las cuatro páginas para revisión sin desplegar; si falla ese paso opcional, no acredita una revisión visual. Lighthouse y prueba de CMS real siguen pendientes.

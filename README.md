@@ -8,20 +8,21 @@ Implementación fuente completa. El entorno no pudo conectar con el proxy al con
 
 ## Instalación desde otro ordenador
 
-Requiere Node.js 22.12+ (recomendado Node 22 LTS) y npm.
+Requiere Node.js 22.22+ (recomendado Node 22 LTS) y npm.
 
 ```bash
 git clone https://github.com/EduardoCR90/restaurant-premium-sanity.git
 cd restaurant-premium-sanity
 # Cambia a la rama de la implementación si todavía no se ha integrado en main.
-npm install
+git switch codex/salitre-astro-sanity
+npm ci
 cp .env.example .env
 npm run dev
 ```
 
 Abre http://localhost:4321. Sin projectId de Sanity el sitio funciona con `src/lib/mock.ts` y muestra un aviso de demostración. Las fotos de ejemplo usan Unsplash y necesitan conexión del navegador; los textos y carta no dependen de esa conexión. Son fotografías ambientales, no retratos de los platos o personas ficticias. Antes de un uso comercial, sustituye y verifica las licencias de todas las fotos.
 
-La build de CI publica un artefacto `salitre-static-review` con el HTML generado, el lock resuelto y el informe de auditoría. No se incluye todavía `package-lock.json` en Git porque las dependencias no se han podido resolver localmente. Tras la primera instalación correcta, guarda el lock en Git, usa `npm ci` en CI y activa la caché npm de setup-node. Las versiones declaradas admiten parches y versiones menores compatibles.
+Se incluye `package-lock.json`, recuperado de la instalación validada en GitHub Actions. Usa `npm ci` para reproducirla. CI conserva durante siete días el artefacto `salitre-static-review` con el HTML, lock, auditoría y capturas de revisión cuando Chrome está disponible. Las capturas no publican la web.
 
 ```bash
 npm run dev           # Astro local
@@ -108,4 +109,4 @@ No se configura SiteGround ni se publica nada en esta fase.
 
 GitHub Actions valida PRs y pushes a main: instalación, Astro/TypeScript, tests, build demo y compilación de Studio con un ID de ejemplo (sin conexiones reales). No despliega. También exporta la semilla y adjunta un informe `npm audit`; sus avisos deben revisarse antes de producción. El pipeline no acredita la conexión a un CMS real.
 
-Pendiente en un equipo con acceso npm: instalar dependencias y generar lock; ejecutar todos los comandos; inspeccionar las cuatro páginas a 375, 768 y 1440 px; probar teclado, contraste y reducción de movimiento; Lighthouse/Core Web Vitals; probar dataset público/privado, errores de contenido y webhook con un proyecto Sanity real. No se atribuyen resultados ni métricas que no se han medido.
+Pendiente en un equipo con acceso npm: instalar con npm ci y repetir los comandos si se modifica el código; inspeccionar las cuatro páginas a 375, 768 y 1440 px; probar teclado, contraste y reducción de movimiento; Lighthouse/Core Web Vitals; probar dataset público/privado, errores de contenido y webhook con un proyecto Sanity real. No se atribuyen resultados ni métricas que no se han medido.

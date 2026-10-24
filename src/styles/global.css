@@ -102,6 +102,7 @@
     padding-inline:var(--gutter)
   }
   .text-link {
+    min-height:44px;
     display:inline-flex;
     align-items:center;
     gap:2rem;
@@ -163,6 +164,9 @@
     font-size:.72rem
   }
   .site-header nav a {
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
     text-decoration:none;
     padding-block:.6rem
   }

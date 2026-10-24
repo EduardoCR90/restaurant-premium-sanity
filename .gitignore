@@ -9,3 +9,4 @@ dist/
 .DS_Store
 coverage/
 studio-dist/
+audit.json

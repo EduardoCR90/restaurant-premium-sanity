@@ -1,0 +1,57 @@
+name: Validate Astro and Sanity
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run check:build
+      - run: npm run seed:export
+      - name: Capture local build previews
+        continue-on-error: true
+        run: |
+          mkdir -p review
+          mkdir -p /tmp/salitre-base-preview
+          ln -s "$PWD/dist" /tmp/salitre-base-preview/restaurant-premium-sanity
+          python3 -m http.server 4321 --bind 127.0.0.1 --directory /tmp/salitre-base-preview > /tmp/salitre-preview.log 2>&1 &
+          preview_pid=$!
+          trap 'kill "$preview_pid"' EXIT
+          for route in inicio carta restaurante reservas; do
+            route_path="$route/"
+            if [ "$route" = inicio ]; then route_path=""; fi
+            timeout 30s google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-desktop.png" --window-size=1440,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/restaurant-premium-sanity/$route_path"
+            timeout 30s google-chrome --headless --no-sandbox --disable-gpu --hide-scrollbars --screenshot="review/$route-mobile.png" --window-size=390,1100 --virtual-time-budget=5000 "http://127.0.0.1:4321/restaurant-premium-sanity/$route_path"
+          done
+      - name: Dependency audit report
+        run: |
+          npm audit --json > audit.json || true
+          node -e 'const a=require("./audit.json"); for (const [n,v] of Object.entries(a.vulnerabilities||{})) console.log(n, v.severity, JSON.stringify(v.via), "fix:", JSON.stringify(v.fixAvailable))'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salitre-static-review
+          path: |
+            dist/
+            package-lock.json
+            audit.json
+            review/
+          retention-days: 7
+      - run: npm run studio:build
+        env:
+          SANITY_STUDIO_PROJECT_ID: abc123de
+          SANITY_STUDIO_DATASET: production
+      - run: test -f studio-dist/index.html
+      - run: npm audit --omit=dev --audit-level=high

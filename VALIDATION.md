@@ -44,3 +44,11 @@ Se añade ClientRouter, fade de 300 ms solo en main, cabecera sin animación y p
 Build local, check:build, tres tests y Astro/TypeScript completados correctamente (0 errores, 0 warnings, 2 hints preexistentes de Zod). Primer recorrido real de Chromium aprobado en escritorio, móvil, movimiento reducido, fallback sin View Transitions y navegación HTML sin JavaScript: cuatro páginas, historial, CTA, anclas, cabecera estable, metadatos actualizados, fotos y ausencia de errores JS. Se amplía el test para prefetch/ahorro de datos y se incorpora a CI con Playwright temporal, fuera del producto.
 
 La publicación y la descarga HTTP de la imagen social se comprueban después de integrar la PR. No se atribuye una vista previa de WhatsApp, Facebook o X sin probar cada plataforma: pueden conservar su propia caché.
+
+## Proyecto Sanity real y Studio separado
+
+Skill sanity-best-practices instalada con npx skills add sanity-io/agent-toolkit --skill sanity-best-practices -y. Leídas get-started, Astro, estructura de proyectos y automatizaciones. Se continúa el modelo existente sin crear un proyecto alternativo.
+
+Lectura real de hfa8zkyw/production: HTTP 200, cero documentos publicados. Check:cms y build local conectada: cmsStatus empty, fuente demo, cuatro páginas y once platos de respaldo. Seis tests aprobados, tipos sin errores y check:build correcto. El fixture de publicación no equivale a publicar contenido real.
+
+Studio comprobado con su propio package.json, lockfile, tsc y sanity build. Los esquemas migrados coinciden con los existentes. Se prepara CI y publicación manual independiente; no se ha desplegado Studio ni schema sin autenticación, ni importado contenido. Webhook directo a workflow_dispatch documentado y receptor preparado; no activado ni probado con una publicación real. Ver docs/sanity-setup.md y las PRs de ambos repositorios para los resultados finales de CI/despliegue.

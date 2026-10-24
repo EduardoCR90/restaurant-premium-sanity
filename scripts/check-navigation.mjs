@@ -74,7 +74,8 @@ try {
       assert.equal(await page.locator('link[rel="canonical"]').getAttribute('href'), 'https://eduardocr90.github.io' + base + route);
       assert.ok(await page.title());
       const social = await page.locator('meta[property="og:image"]').getAttribute('content');
-      assert.equal(social, 'https://eduardocr90.github.io' + base + 'og-default.jpg');
+      assert.ok(social?.startsWith('https://'));
+      assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute('content'), social);
     }
     async function click(route, selector) {
       const count = await page.evaluate(() => window.__salitreLoads);

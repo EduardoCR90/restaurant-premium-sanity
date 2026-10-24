@@ -8,14 +8,13 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "check": "astro check && tsc --project sanity/tsconfig.json --noEmit",
+    "check": "astro check",
     "build": "astro build",
     "preview": "astro preview",
-    "studio": "sanity dev --host 127.0.0.1",
-    "studio:build": "sanity build studio-dist --yes",
     "test": "node --import tsx --test tests/*.test.ts",
     "seed:export": "tsx scripts/export-seed.ts",
-    "check:build": "node scripts/check-build.mjs"
+    "check:build": "node scripts/check-build.mjs",
+    "check:cms": "tsx scripts/check-cms.ts"
   },
   "dependencies": {
     "astro": "^7.4.1",
@@ -25,12 +24,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
     "typescript": "^5.9.2",
-    "sanity": "^6.20.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "@types/react": "^19.1.0",
     "@types/node": "^22.0.0",
-    "tsx": "^4.20.0",
-    "styled-components": "^6.1.19"
+    "tsx": "^4.20.0"
   }
 }

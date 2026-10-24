@@ -19,6 +19,19 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - run: npm run seed:export
+      - name: Dependency audit report
+        run: |
+          npm audit --json > audit.json || true
+          node -e 'const a=require("./audit.json"); for (const [n,v] of Object.entries(a.vulnerabilities||{})) console.log(n, v.severity, JSON.stringify(v.via), "fix:", JSON.stringify(v.fixAvailable))'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: salitre-static-review
+          path: |
+            dist/
+            package-lock.json
+            audit.json
+          retention-days: 7
       - run: npm run studio:build
         env:
           SANITY_STUDIO_PROJECT_ID: abc123de

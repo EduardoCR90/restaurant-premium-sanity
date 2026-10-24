@@ -15,7 +15,9 @@
 
 ## GitHub y CI
 
-El conector de GitHub dispone de acceso independiente de la terminal. La implementación se entrega en la rama `codex/salitre-astro-sanity`, mediante PR para revisión. El workflow valida Astro, Sanity, contratos y builds sin despliegue. Su resultado debe comprobarse en la PR; los resultados locales anteriores no constituyen una build aprobada.
+El conector de GitHub dispone de acceso independiente de la terminal. La implementación se entrega en la rama `codex/salitre-astro-sanity`, mediante PR para revisión. El workflow valida Astro, Sanity, contratos y builds sin despliegue. La primera ejecución [40090104188](https://github.com/EduardoCR90/restaurant-premium-sanity/actions/runs/40090104188), commit 13aa5c8, completó correctamente instalación, Astro/TypeScript (19 archivos, 0 errores, 0 avisos), los tres tests Zod, build estática (cuatro páginas) y build de Studio. La última revisión debe comprobarse por separado en la PR.
+
+La compilación inicial de Studio detectó styled-components ausente y lo instaló automáticamente; se corrigió declarándolo expresamente. También se separó su directorio de salida de Astro. El log inicial informó de 12 avisos de auditoría de dependencias (incluido uno crítico); el workflow actualizado adjunta el informe completo para identificar versiones y correcciones. Una build aprobada no implica una auditoría sin avisos.
 
 ## Pendiente
 

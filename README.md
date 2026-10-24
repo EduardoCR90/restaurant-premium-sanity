@@ -4,7 +4,7 @@ Web editorial para un restaurante **ficticio** en Tenerife. Astro estático, Typ
 
 ## Estado de esta entrega
 
-Implementación fuente completa. El entorno no pudo conectar con el proxy al consultar GitHub/npm y no tiene las dependencias en caché. La primera ejecución de GitHub Actions ha superado Astro/TypeScript (0 errores y avisos), tres tests, build estática de las cuatro páginas y compilación de Studio. Las revisiones posteriores vuelven a pasar por CI. No hay credenciales de Sanity; **la conexión a un dataset real no se ha probado**. No se ha desplegado el proyecto. Consulta `VALIDATION.md` para los resultados verificables y las comprobaciones pendientes.
+Implementación fuente completa. El entorno no pudo conectar con el proxy al consultar GitHub/npm y no tiene las dependencias en caché. La primera ejecución de GitHub Actions ha superado Astro/TypeScript (0 errores y avisos), tres tests, build estática de las cuatro páginas y compilación de Studio. Las revisiones posteriores vuelven a pasar por CI. No hay credenciales de Sanity; **la conexión a un dataset real no se ha probado**. La demo está publicada en GitHub Pages; su estado se comprueba en el workflow de despliegue. Consulta `VALIDATION.md` para los resultados verificables y las comprobaciones pendientes.
 
 ## Instalación desde otro ordenador
 
@@ -54,7 +54,7 @@ tests/           Validación de contratos y URLs
 sanity.config.ts, sanity.cli.ts
 ```
 
-`getContent()` obtiene una instantánea reutilizada en build. El cliente oficial ejecuta una consulta GROQ con referencias resueltas, perspectiva `published`, sin CDN y sin reintentos. Zod valida la respuesta; además se comprueba que haya exactamente una página por ruta y que cada plato tenga categoría. Los componentes reciben datos tipados y nunca conocen tokens ni SDKs. No hay JavaScript enviado al navegador por la aplicación.
+`getContent()` obtiene una instantánea reutilizada en build. El cliente oficial ejecuta una consulta GROQ con referencias resueltas, perspectiva `published`, sin CDN y sin reintentos. Zod valida la respuesta; además se comprueba que haya exactamente una página por ruta y que cada plato tenga categoría. Los componentes reciben datos tipados y nunca conocen tokens ni SDKs. El frontend solo añade el ClientRouter y prefetch nativos de Astro para navegar; no monta React ni islas del CMS.
 
 El modo demo solo se usa sin proyecto configurado o al activar expresamente `SANITY_ALLOW_DEMO_FALLBACK=true`. Un CMS configurado con fallos de conexión o contenido inválido **detiene la build por defecto**, conservando así la última versión publicada en un hosting con despliegues atómicos. El error no vuelca tokens ni respuesta del SDK. Con fallback se muestra un aviso visible de demo. Una categoría sin platos o galería vacía tiene un estado vacío. Los platos no disponibles se muestran identificados en carta y se excluyen de destacados.
 
@@ -131,3 +131,15 @@ Configuración manual en GitHub:
 Sin tocar credenciales, puedes reproducir la build con `npm ci`, `npm run build`, `npm run check:build` y `npm run preview`. La comprobación de build verifica rutas, recursos locales, anclas, navegación activa y canonical de las cuatro páginas bajo la base. CI sirve las capturas bajo la misma subruta y limita cada ejecución de Chrome a 30 segundos.
 
 Para mover el proyecto en el futuro a un dominio sin subcarpeta, cambia site/base en astro.config.mjs y actualiza la comprobación de build; no elimines manualmente los prefijos de cada componente.
+
+## Navegación y vista previa al compartir
+
+El layout compartido monta `ClientRouter` de `astro:transitions`. El root y la cabecera no se animan; solo el contenido usa `fade({ duration: '300ms' })`, también al recorrer el historial. La cabecera se reemplaza con el HTML actualizado sin animación para conservar `aria-current` correcto: no se persiste un menú con estado obsoleto. El menú móvil continúa siendo una fila de enlaces nativos, sin scripts de apertura/cierre. No se requieren listeners de `astro:page-load` de producto; si se añaden nuevas interacciones, inicialízalas en ese evento evitando duplicar listeners.
+
+Prefetch es opt-in en navegación y CTA: `prefetchAll: false`, estrategia hover/foco y atributo data-astro-prefetch. No se precargan todas las páginas al entrar ni enlaces externos/anclas; Astro cambia a tap con ahorro de datos o conexión lenta. No se ignora la detección de red. El router mantiene sus anuncios accesibles y respeta movimiento reducido, con una regla adicional para los pseudoelementos de View Transitions. Sin JS sigue disponible la navegación HTML; sin la API nativa se usa el fallback de Astro.
+
+El head ordena charset, viewport, título/descripción/canonical, robots/presentación, Open Graph/Twitter y recursos/router. Los metadatos se generan en HTML estático y se actualizan durante las transiciones. La imagen por defecto `public/og-default.jpg` es un JPEG progresivo 1200×630 (aprox. 146 KiB), servido desde la base de GitHub Pages con URL HTTPS absoluta, tipo, dimensiones y texto alternativo. Se usa la misma fotografía de demostración del hero de Unsplash, identificador photo-1414235077428-338989a2e8c0. El campo SEO de imagen de Sanity tiene prioridad cuando está configurado y publicado; no se inventan sus dimensiones.
+
+Las redes pueden cachear una vista previa anterior: tras desplegar, solicita una nueva lectura en el inspector de compartir de la plataforma correspondiente. Que los metadatos y la imagen respondan correctamente no acredita el resultado de todas las apps de mensajería.
+
+`node scripts/check-navigation.mjs` prueba las cuatro páginas en Chromium, historial, CTA, anclas, cabecera estable, metadatos, imágenes, errores JS, fallback sin View Transitions, movimiento reducido, ahorro de datos y navegación sin JS. CI instala Playwright temporalmente fuera del proyecto y usa Chrome ya instalado; no se añade ninguna dependencia al producto o al lockfile. Para reproducirlo: instala playwright@1.56.1 en un directorio temporal, ejecuta npm run build y npm run preview y define PLAYWRIGHT_MODULE con la URL file:// de su index.mjs; CHROME_BIN permite seleccionar el ejecutable. TEST_ORIGIN permite ejecutar el mismo recorrido contra un servidor publicado.

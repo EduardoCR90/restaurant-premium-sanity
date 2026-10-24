@@ -36,3 +36,11 @@ Se inspeccionó el HTML construido descargado de CI: un h1 por página, enlaces 
 Se conserva todo el proyecto existente y package-lock.json. Se configura site/base para la URL solicitada, se reemplazan enlaces absolutos y favicon mediante BASE_URL y se añade deploy.yml con la acción oficial de Astro. Se añade `npm run check:build` para comprobar el HTML real generado bajo la subruta, no solo los fuentes. El workflow de validación usa esa misma base en sus capturas y limita el tiempo de Chrome.
 
 En la terminal, `node --check astro.config.mjs`, `node --check scripts/check-build.mjs` y `git diff --check` pasan. `npm run build` sigue bloqueado localmente por dependencias ausentes y el proxy inaccesible. Se ejecutará en Actions para validar la revisión de Pages. La publicación solo se considera verificada tras comprobar el job deploy y una respuesta pública válida; puede requerir activar Pages manualmente en Settings.
+
+## Navegación nativa y metadatos sociales
+
+Se añade ClientRouter, fade de 300 ms solo en main, cabecera sin animación y prefetch opt-in que respeta ahorro de datos. Se completa el head y se incorpora un JPEG social local 1200×630 (148957 bytes aproximadamente), conservando la prioridad del SEO publicado en Sanity.
+
+Build local, check:build, tres tests y Astro/TypeScript completados correctamente (0 errores, 0 warnings, 2 hints preexistentes de Zod). Primer recorrido real de Chromium aprobado en escritorio, móvil, movimiento reducido, fallback sin View Transitions y navegación HTML sin JavaScript: cuatro páginas, historial, CTA, anclas, cabecera estable, metadatos actualizados, fotos y ausencia de errores JS. Se amplía el test para prefetch/ahorro de datos y se incorpora a CI con Playwright temporal, fuera del producto.
+
+La publicación y la descarga HTTP de la imagen social se comprueban después de integrar la PR. No se atribuye una vista previa de WhatsApp, Facebook o X sin probar cada plataforma: pueden conservar su propia caché.

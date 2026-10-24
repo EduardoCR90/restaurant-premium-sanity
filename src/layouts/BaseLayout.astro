@@ -1,4 +1,5 @@
 ---
+import { ClientRouter, fade } from 'astro:transitions';
 import { pathFor } from '../lib/paths';
 import '../styles/global.css';
 import Header from '../components/Header.astro';
@@ -9,25 +10,52 @@ const { data, slug } = Astro.props;
 const { settings } = data.content;
 const page = data.content.pages.find(page => page.slug === slug)!;
 const canonical = new URL(Astro.url.pathname, Astro.site);
-const ogImage = page.seo.image?.url || page.image?.url;
+const cmsSocialImage = data.source === 'sanity' ? page.seo.image : undefined;
+const socialImage = cmsSocialImage?.url || new URL(pathFor('/og-default.jpg'), Astro.site).href;
+const socialAlt = cmsSocialImage?.alt || 'Mesa de alta cocina, vajilla y copas con luz cálida · Salitre';
 const demo = data.source === 'demo' || settings.isFictional || canonical.hostname.endsWith('.example');
 ---
 <!doctype html>
-<html lang="es"><head>
- <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
- <title>{page.seo.title}</title><meta name="description" content={page.seo.description}/>
- <link rel="canonical" href={canonical}/><meta name="theme-color" content="#ece8df"/>
+<html lang="es" transition:animate="none">
+<head>
+ <!-- Codificación y viewport primero; metadatos esenciales antes de recursos y scripts. -->
+ <meta charset="UTF-8"/>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <title>{page.seo.title}</title>
+ <meta name="description" content={page.seo.description}/>
+ <link rel="canonical" href={canonical}/>
  {demo && <meta name="robots" content="noindex, follow"/>}
- <meta property="og:type" content="website"/><meta property="og:locale" content="es_ES"/>
- <meta property="og:title" content={page.seo.title}/><meta property="og:description" content={page.seo.description}/><meta property="og:url" content={canonical}/><meta property="og:site_name" content={settings.name}/>
- {ogImage && <meta property="og:image" content={ogImage}/>}
+ <meta name="theme-color" content="#ece8df"/>
+ <meta name="color-scheme" content="light"/>
+
+ <!-- Siempre presentes en el HTML estático para los crawlers de redes sociales. -->
+ <meta property="og:type" content="website"/>
+ <meta property="og:locale" content="es_ES"/>
+ <meta property="og:site_name" content={settings.name}/>
+ <meta property="og:title" content={page.seo.title}/>
+ <meta property="og:description" content={page.seo.description}/>
+ <meta property="og:url" content={canonical}/>
+ <meta property="og:image" content={socialImage}/>
+ <meta property="og:image:secure_url" content={socialImage}/>
+ <meta property="og:image:alt" content={socialAlt}/>
+ {!cmsSocialImage && <>
+  <meta property="og:image:type" content="image/jpeg"/>
+  <meta property="og:image:width" content="1200"/>
+  <meta property="og:image:height" content="630"/>
+ </>}
  <meta name="twitter:card" content="summary_large_image"/>
+ <meta name="twitter:title" content={page.seo.title}/>
+ <meta name="twitter:description" content={page.seo.description}/>
+ <meta name="twitter:image" content={socialImage}/>
+ <meta name="twitter:image:alt" content={socialAlt}/>
+
  <link rel="icon" href={pathFor('/favicon.svg')} type="image/svg+xml"/>
  <link rel="preconnect" href="https://images.unsplash.com"/>
+ <ClientRouter fallback="animate"/>
 </head><body id="top">
  <a class="skip-link" href="#contenido">Saltar al contenido</a>
  <Header name={settings.name}/>
  {data.source === 'demo' && <aside class="demo-notice">{data.warning || 'Proyecto de demostración · Restaurante y datos ficticios · Reservas no activas'}</aside>}
- <main id="contenido"><slot/></main>
+ <main id="contenido" transition:name="page-content" transition:animate={fade({ duration: '300ms' })}><slot/></main>
  <Footer settings={settings}/>
 </body></html>

@@ -1,0 +1,25 @@
+name: Validate Astro and Sanity
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      # Cambiar a npm ci y activar cache npm al generar el primer package-lock.json.
+      - run: npm install --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: npm run build
+      - run: npm run studio:build
+        env:
+          SANITY_STUDIO_PROJECT_ID: abc123de
+          SANITY_STUDIO_DATASET: production

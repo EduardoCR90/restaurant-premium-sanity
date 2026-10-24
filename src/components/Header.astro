@@ -1,0 +1,9 @@
+---
+interface Props { name: string; }
+const { name } = Astro.props;
+const links = [{ href:'/',label:'Inicio' },{ href:'/carta/',label:'La carta' },{ href:'/restaurante/',label:'La casa' },{ href:'/reservas/',label:'Reservas' }];
+---
+<header class="site-header wrap">
+ <a href="/" class="wordmark" aria-label={`${name} · Inicio`}>{name}<span>COCINA DE ORIGEN</span></a>
+ <nav aria-label="Navegación principal">{links.map(link => <a href={link.href} aria-current={Astro.url.pathname === link.href ? 'page' : undefined}>{link.label}</a>)}</nav>
+</header>

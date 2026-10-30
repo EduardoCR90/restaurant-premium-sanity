@@ -10,6 +10,8 @@ Consulta [la guía de fase 1](docs/phase-1.md) para arquitectura, catálogo de b
 
 El 30 de octubre de 2026 se verificó lectura de los 22 documentos publicados en hfa8zkyw/production y build con contenido real. [VALIDATION.md](VALIDATION.md) distingue comprobaciones locales, fixtures y pruebas pendientes. No se ha modificado contenido de producción ni desplegado esta fase.
 
+Para revisar exclusivamente desde el móvil, consulta el [cierre de fase 1 y sus capturas](docs/phase-1-closeout.md). Incluye el estado de Actions, el ensayo editorial aislado y el orden de integración/publicación.
+
 ## Instalación desde otro ordenador
 
 Requiere Node.js 22.22+ (recomendado Node 22 LTS) y npm.

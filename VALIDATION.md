@@ -74,3 +74,11 @@ Comprobaciones ejecutadas en esta sesión:
 No existe script lint en ninguno de los repositorios. No se ha medido Lighthouse/Core Web Vitals ni probado con lector de pantalla. Las pruebas de rutas/bloques nuevos usan fixtures: no equivalen a una publicación editorial real. Pendientes: revisión del Studio actualizado y publicación de una página nueva en un dataset de ensayo tras aprobar las PR.
 
 El propietario confirma que el webhook funciona. Su filtro/dispatch no cambian; no se publica contenido para volver a dispararlo y no se ha efectuado ningún despliegue, merge, importación o escritura en production en esta fase.
+
+## Cierre de fase 1 — comprobaciones posteriores
+
+Las ejecuciones CI [frontend 41100227312](https://github.com/EduardoCR90/restaurant-premium-sanity/actions/runs/41100227312) y [Studio 41100230312](https://github.com/EduardoCR90/studio-salitre-restaurant/actions/runs/41100230312) finalizaron con success. Se volvieron a ejecutar check/tests/build en ambos repositorios y check:build/check:cms en frontend, correctamente, con 14 y seis tests.
+
+Se contrastaron los campos originales proyectados con la lectura inicial: sin cambios, 22 documentos publicados. También se evaluó el GROQ completo con documentos en formato Sanity y una página añadida solo en memoria: diez bloques resueltos, imágenes y referencias correctas, nueva navegación y página oculta excluida. Una build aislada y Chromium verificaron las cinco páginas a 390/768/1440 px, imágenes, h1, ausencia de desbordamientos/errores JS y FAQ/navegación de la página simulada. Las cuatro URLs actuales siguen respondiendo HTTP 200.
+
+El [informe de cierre](docs/phase-1-closeout.md) distingue esta simulación de una publicación editorial real pendiente y proporciona capturas accesibles desde GitHub móvil. No se ha desplegado ninguna vista previa externa ni modificado el CMS. Las comprobaciones del último commit de documentación/capturas deben consultarse también en cada PR.

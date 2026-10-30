@@ -1,0 +1,21 @@
+---
+import {getContent} from '../lib/content';
+import {getPublishedPages} from '../lib/pages';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HomePage from '../components/HomePage.astro';
+import MenuPage from '../components/MenuPage.astro';
+import StoryPage from '../components/StoryPage.astro';
+import ContactPage from '../components/ContactPage.astro';
+import BlockRenderer from '../components/blocks/BlockRenderer.astro';
+import PageIntro from '../components/PageIntro.astro';
+export async function getStaticPaths() {
+ const data = await getContent();
+ return getPublishedPages(data.content).map(page => ({params:{slug:page.slug === 'inicio' ? undefined : page.slug},props:{data,page}}));
+}
+const {data,page} = Astro.props;
+const templates = {inicio:HomePage,carta:MenuPage,restaurante:StoryPage,reservas:ContactPage};
+const Template = Object.hasOwn(templates,page.slug) ? templates[page.slug as keyof typeof templates] : undefined;
+---
+<BaseLayout data={data} slug={page.slug}>
+ {page.blocks?.length || !Template ? <><PageIntro {...page}/><BlockRenderer blocks={page.blocks || []} content={data.content}/></> : <Template data={data}/>}
+</BaseLayout>

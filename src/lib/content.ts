@@ -26,6 +26,3 @@ async function load(): Promise<ContentResult> {
   }
 }
 export function getContent(): Promise<ContentResult> { return snapshot ??= load(); }
-export function formatPrice(value: number): string {
-  return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 2 }).format(value);
-}

@@ -1,0 +1,14 @@
+---
+import PageIntro from '../components/PageIntro.astro';
+import MenuSection from './MenuSection.astro';
+import {getMenu} from '../lib/pages';
+import type { ContentResult } from '../types/content';
+interface Props {data:ContentResult;}
+const {data} = Astro.props;
+const page = data.content.pages.find(p => p.slug === 'carta')!;
+---
+
+ <PageIntro {...page}/>
+ <MenuSection {...getMenu(data.content)}/>
+
+

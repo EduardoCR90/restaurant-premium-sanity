@@ -1,14 +1,14 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
 import PageIntro from '../components/PageIntro.astro';
 import Photo from '../components/Photo.astro';
-import { getContent } from '../lib/content';
-const data = await getContent();
+import type { ContentResult } from '../types/content';
+interface Props {data:ContentResult;}
+const {data} = Astro.props;
 const { settings } = data.content;
 const page = data.content.pages.find(p => p.slug === 'reservas')!;
 const canReserve = data.source === 'sanity' && !settings.isFictional && settings.reservationUrl;
 ---
-<BaseLayout data={data} slug="reservas">
+
  <PageIntro {...page}/>
  <section class="contact-layout wrap" aria-label="Reservas y datos de contacto"><div class="contact-photo">{page.image && <Photo image={page.image} eager/>}</div><div class="contact-details">
  <div><p class="eyebrow">01 — Tu mesa</p><h2>Nos vemos <em>aquí.</em></h2>{canReserve ? <a class="button" href={settings.reservationUrl!} target="_blank" rel="noopener noreferrer">Reservar con nuestro proveedor ↗</a> : <p class="reservation-status">Las reservas todavía no están activas. Este espacio está preparado para conectar un proveedor real; no se tramita ni se confirma ninguna reserva.</p>}</div>
@@ -16,4 +16,4 @@ const canReserve = data.source === 'sanity' && !settings.isFictional && settings
  <div><h3>Dónde encontrarnos</h3><address>{settings.address}<br/>{settings.isFictional ? <><span>{settings.email}</span><br/><span>{settings.phone}</span></> : <><a href={`mailto:${settings.email}`}>{settings.email}</a><br/><a href={`tel:${settings.phone.replace(/[^+0-9]/g,'')}`}>{settings.phone}</a></>}</address></div>
  {settings.isFictional && <p class="contact-disclaimer">Dirección, teléfono, correo y horarios de ejemplo. Este restaurante es ficticio. No acudas a esta ubicación ni utilices estos datos para realizar reservas.</p>}
  </div></section>
-</BaseLayout>
+

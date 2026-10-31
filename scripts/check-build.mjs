@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import { readFile, access } from 'node:fs/promises';
+import { readFile, access, readdir } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 
 const root = resolve('dist');
-const base = '/restaurant-premium-sanity/';
+const base = (process.env.SITE_BASE || '/restaurant-premium-sanity').replace(/\/$/,'') + '/';
 const origin = process.env.SITE_URL || 'https://eduardocr90.github.io';
-const routes = ['', 'carta/', 'restaurante/', 'reservas/'];
+const routes = (await readdir(root,{recursive:true})).filter(name=>name === 'index.html' || name.endsWith('/index.html')).map(name=>name === 'index.html' ? '' : name.slice(0,-10));
 const pages = new Map();
 for (const route of routes) pages.set(base + route, await readFile(join(root, route, 'index.html'), 'utf8'));
 
@@ -26,7 +26,7 @@ async function checkUrl(value, currentPath) {
 
 for (const [route, html] of pages) {
   assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, `H1: ${route}`);
-  assert.equal((html.match(/aria-current="page"/g) || []).length, 1, `Navegación activa: ${route}`);
+  assert.ok((html.match(/aria-current="page"/g) || []).length <= 1, `Navegación activa duplicada: ${route}`);
   const canonical = html.match(/<link[^>]*rel="canonical"[^>]*href="([^"]+)"/);
   assert.equal(canonical?.[1], origin + route, `Canonical: ${route}`);
   const image = html.match(/<meta[^>]*property="og:image"[^>]*content="([^"]+)"/);
@@ -40,4 +40,7 @@ for (const [route, html] of pages) {
   }
   console.log(`OK ${route}: navegación, recursos, anclas y canonical`);
 }
-console.log('Build verificada bajo /restaurant-premium-sanity/.');
+const notFound = await readFile(join(root,'404.html'),'utf8');
+assert.ok(notFound.includes('noindex, follow'), '404 sin noindex');
+await access(join(root,'sitemap.xml'));
+console.log(`Build verificada bajo ${base}.`);

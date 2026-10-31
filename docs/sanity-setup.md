@@ -2,11 +2,11 @@
 
 ## Estado comprobado
 
-Proyecto existente: **Salitre-restaurant**, ID **hfa8zkyw**, dataset **production**. La API pública respondió HTTP 200 con cero documentos publicados del restaurante el 24 de octubre de 2026. `npm run check:cms` y una build real han confirmado acceso al dataset y fallback visible a demo. No se ha publicado ningún documento ni modificado el dataset.
+Proyecto **Salitre-restaurant**, ID **hfa8zkyw**, dataset **production**. El 30 de octubre de 2026 la lectura pública validó 22 documentos publicados: cuatro páginas y once platos, junto a configuración, historia, galería y categorías. La build con contenido real sigue funcionando.
 
-Studio se ha trasladado a [EduardoCR90/studio-salitre-restaurant](https://github.com/EduardoCR90/studio-salitre-restaurant). Sus ocho tipos, campos e IDs singleton son los existentes; se comprobó que el archivo de esquemas migrado coincide con el original. Su build y comprobación de tipos se han ejecutado de forma independiente. No está incrustado en Astro y es la única fuente de verdad de los esquemas.
+Studio vive en [EduardoCR90/studio-salitre-restaurant](https://github.com/EduardoCR90/studio-salitre-restaurant) y conserva los ocho tipos originales y los IDs singleton. La fase 1 añade objetos de bloques, enlaces, texto enriquecido, tema y preferencias de módulos sin sustituir documentos. Lee [phase-1.md](phase-1.md) antes de convertir una página existente.
 
-No se ha verificado una edición/publicación real desde Studio ni la entrega de un webhook: requieren autenticar el despliegue del Studio y configurar el webhook en tu cuenta.
+El propietario confirma que Sanity → workflow_dispatch ya está configurado y funciona. Esta sesión no ha publicado contenido, desplegado Studio ni vuelto a disparar el webhook. Las instrucciones siguientes documentan la configuración para mantenerla o reutilizarla en otro restaurante.
 
 ## Variables del frontend
 
@@ -14,6 +14,7 @@ No se ha verificado una edición/publicación real desde Studio ni la entrega de
 
 ```dotenv
 SITE_URL=https://eduardocr90.github.io
+SITE_BASE=/restaurant-premium-sanity
 SANITY_PROJECT_ID=hfa8zkyw
 SANITY_DATASET=production
 SANITY_USE_MOCK=false
@@ -25,7 +26,7 @@ SANITY_API_READ_TOKEN=
 - El dataset es legible sin token en la verificación realizada. Solo si lo conviertes en privado, añade un token de lectura mínima a `.env` o al secreto de Actions `SANITY_API_READ_TOKEN` del frontend. Nunca uses prefijos PUBLIC_ o SANITY_STUDIO_ para tokens.
 - SANITY_USE_MOCK=true es para desarrollo sin conexión y tests deterministas. En el workflow de Pages es false.
 - Un dataset accesible sin contenido publicado utiliza demo automáticamente. Los assets sueltos no cuentan como contenido del restaurante.
-- Una vez existan documentos publicados se exige contenido coherente: configuración, historia, cuatro páginas únicas y referencias válidas. Una publicación incompleta o una caída de conexión detiene la nueva build; la web publicada anterior permanece disponible. SANITY_ALLOW_DEMO_FALLBACK=true permite volver a demo explícita de forma deliberada, no silenciosa.
+- Una vez existan documentos publicados se exige contenido coherente: configuración, historia, las cuatro páginas lógicas originales, slugs únicos adicionales y referencias válidas. Una publicación incompleta o una caída de conexión detiene la nueva build; la web publicada anterior permanece disponible. SANITY_ALLOW_DEMO_FALLBACK=true permite volver a demo explícita de forma deliberada, no silenciosa.
 
 La lectura usa el SDK oficial existente, perspectiva published, API fijada en 2025-02-19 y useCdn=false para builds estáticas. `sanity.server.ts` contiene la configuración y el token; solo lo importa la capa de build. Las transiciones del navegador siguen consumiendo HTML estático, sin cliente CMS ni credenciales.
 
@@ -49,13 +50,13 @@ El Studio conserva estos apartados:
 | settings | Marca, concepto, contacto y horarios | Singleton restaurant-settings |
 | story | Historia, filosofía y chef | Singleton restaurant-story |
 | gallery | Galería ordenable | Singleton restaurant-gallery |
-| page | Titulares, textos e imágenes/SEO | Slugs inicio, carta, restaurante y reservas |
+| page | Título, ruta, SEO, navegación y bloques ordenables | Slugs originales conservados y nuevas rutas válidas |
 | category | Nombre, nota editorial y orden | ID asignado por Sanity |
 | dish | Nombre, descripción, precio, imagen, alérgenos y disponibilidad | Referencia a categoría; ID asignado por Sanity |
 
 editorialImage y seo son objetos reutilizados por esos documentos. No se han creado modelos alternativos.
 
-Rellena y publica los tres singletons y las cuatro páginas. Después crea categorías y platos, publica primero las categorías referenciadas y sube fotografías con alt. La galería puede estar vacía. Mantén isFictional activo mientras se trate de contenido de demostración.
+**Solo para un proyecto nuevo:** rellena y publica los tres singletons y las cuatro páginas. El proyecto Salitre ya tiene esos documentos: edítalos, no los dupliques ni vuelvas a importar una semilla. Después crea categorías y platos, publica primero las categorías referenciadas y sube fotografías con alt. La galería puede estar vacía. Mantén isFictional activo mientras se trate de contenido de demostración.
 
 Para la primera carga conviene completar esos documentos antes de activar el webhook. Si publicas solo una parte, una nueva build detectará el contenido incompleto y conservará el despliegue anterior. `npm run check:cms` permite verificar cuándo está completo.
 
@@ -98,7 +99,7 @@ Proyección GROQ (cuerpo exacto que necesita GitHub):
 5. Con contenido inicial completo, publica un cambio pequeño en un plato. Revisa la entrega en Sanity y la ejecución **Deploy demo to GitHub Pages** en GitHub. Confirma build/deploy y el cambio de precio/texto en la web.
 6. Si falla la entrega, revisa permiso Actions:write, caducidad del token y que deploy.yml esté en main. Si falla la build, revisa documentos y referencias; no publiques demo silenciosamente para ocultar el error.
 
-El workflow mantiene concurrencia para Pages, usa contenido publicado actual en cada build y conserva los controles de rama/entorno existentes. No se ha configurado el token ni activado/probado este webhook desde la sesión.
+El workflow mantiene concurrencia para Pages, usa contenido publicado actual en cada build y conserva los controles de rama/entorno existentes. El webhook existente se conserva. No se ha inspeccionado su cabecera privada ni disparado un despliegue desde esta sesión. Los bloques están embebidos en page y tema/módulos en settings: el filtro y la proyección actuales siguen siendo válidos.
 
 ## Comprobaciones
 

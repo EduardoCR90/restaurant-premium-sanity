@@ -1,19 +1,14 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PageIntro from '../components/PageIntro.astro';
-import { getContent, formatPrice } from '../lib/content';
-const data = await getContent();
-const { categories, dishes } = data.content;
-const page = data.content.pages.find(p => p.slug === 'carta')!;
+import {formatPrice} from '../lib/format';
+import type {Content} from '../types/content';
+interface Props {categories:Content['categories'];dishes:Content['dishes'];prefix?:string;}
+const {categories,dishes,prefix=''} = Astro.props;
 ---
-<BaseLayout data={data} slug="carta">
- <PageIntro {...page}/>
  <div class="menu-layout wrap">
- <nav class="menu-index" aria-label="Categorías de la carta">{categories.map((category,index) => <a href={`#categoria-${category._id}`}><span>0{index+1}</span>{category.name}</a>)}</nav>
- <div class="menu-content">{categories.map((category,index) => <section class="menu-section" id={`categoria-${category._id}`}><p class="eyebrow">0{index+1} / {category.note}</p><h2>{category.name}</h2>
+ <nav class="menu-index" aria-label="Categorías de la carta">{categories.map((category,index) => <a href={`#${prefix}categoria-${category._id}`}><span>0{index+1}</span>{category.name}</a>)}</nav>
+ <div class="menu-content">{categories.map((category,index) => <section class="menu-section" id={`${prefix}categoria-${category._id}`}><p class="eyebrow">0{index+1} / {category.note}</p><h2>{category.name}</h2>
  {dishes.filter(d => d.categoryId === category._id).map(dish => <article class:list={['menu-dish', { unavailable: !dish.available }]}><div><h3>{dish.name}</h3><p>{dish.description}</p><small>{dish.allergens.length ? `Alérgenos: ${dish.allergens.join(', ')}` : 'Sin alérgenos declarados'}{!dish.available && ' · Temporalmente no disponible'}</small></div><span class="price">{formatPrice(dish.price)}</span></article>)}
  {!dishes.some(d => d.categoryId === category._id) && <p class="empty-state">Estamos preparando esta selección.</p>}
  </section>)}
  {categories.length === 0 && <p class="empty-state">La carta de temporada estará disponible próximamente.</p>}
  <p class="menu-disclaimer">Precios en euros. IVA incluido. Comunica cualquier alergia o intolerancia al equipo; puede haber trazas por contaminación cruzada. La disponibilidad sigue el ritmo de la temporada.</p></div></div>
-</BaseLayout>

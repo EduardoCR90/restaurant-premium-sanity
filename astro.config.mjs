@@ -13,7 +13,7 @@ if (!site.startsWith('https://')) throw new Error('SITE_URL debe ser una URL HTT
 
 export default defineConfig({
   site,
-  base: '/restaurant-premium-sanity',
+  base: process.env.SITE_BASE || '/restaurant-premium-sanity',
   output: 'static',
   trailingSlash: 'always',
   // Solo enlaces marcados: hover/foco; Astro reduce a tap con ahorro de datos o red lenta.

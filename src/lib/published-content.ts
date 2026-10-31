@@ -21,6 +21,7 @@ export function resolvePublishedContent(raw: unknown): ContentResult {
       throw new Error('Publica exactamente una página por ruta: inicio, carta, restaurante y reservas.');
     }
   }
+  if (new Set(content.pages.map(p => p.slug)).size !== content.pages.length) throw new Error('Los slugs de páginas deben ser únicos.');
   if (content.dishes.some(dish => !content.categories.some(category => category._id === dish.categoryId))) {
     throw new Error('Publica las categorías referenciadas por los platos.');
   }

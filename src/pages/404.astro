@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {getContent} from '../lib/content';
+import {getHomeHref} from '../lib/pages';
+import {pathFor} from '../lib/paths';
+import {pageSchema} from '../types/content';
+const data = await getContent();
+const page = pageSchema.parse({slug:'error',title:'Página no encontrada',noindex:true,seo:{title:'Página no encontrada',description:'La página solicitada no existe.'}});
+---
+<BaseLayout data={data} slug="error" pageOverride={page}><section class="page-intro wrap"><p class="eyebrow">404</p><h1>Página no encontrada</h1>{getHomeHref(data.content) && <a class="text-link" href={pathFor(getHomeHref(data.content)!)}>Volver al inicio</a>}</section></BaseLayout>

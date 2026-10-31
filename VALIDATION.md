@@ -52,3 +52,33 @@ Skill sanity-best-practices instalada con npx skills add sanity-io/agent-toolkit
 Lectura real de hfa8zkyw/production: HTTP 200, cero documentos publicados. Check:cms y build local conectada: cmsStatus empty, fuente demo, cuatro páginas y once platos de respaldo. Seis tests aprobados, tipos sin errores y check:build correcto. El fixture de publicación no equivale a publicar contenido real.
 
 Studio comprobado con su propio package.json, lockfile, tsc y sanity build. Los esquemas migrados coinciden con los existentes. Se prepara CI y publicación manual independiente; no se ha desplegado Studio ni schema sin autenticación, ni importado contenido. Webhook directo a workflow_dispatch documentado y receptor preparado; no activado ni probado con una publicación real. Ver docs/sanity-setup.md y las PRs de ambos repositorios para los resultados finales de CI/despliegue.
+
+## Fase 1 — 30 octubre 2026
+
+Se inspeccionaron frontend y Studio antes de modificar código. Versiones de partida: frontend 70cfac8; Studio 4d6752b. La lectura inicial de hfa8zkyw/production confirmó 22 documentos publicados, cuatro páginas y once platos. Se conservaron una instantánea de lectura y la build previa para comparar, fuera de los archivos versionados.
+
+Comprobaciones ejecutadas en esta sesión:
+
+- `npm ci --no-audit --no-fund`: correcto en ambos repositorios, usando sus lockfiles sin añadir dependencias.
+- Frontend `npm run check`: 0 errores, 0 warnings, 0 hints.
+- Frontend `npm test`: 14 pruebas aprobadas. Incluye builds Astro aisladas con los diez bloques, opcionales, orden, tipos inválidos/desconocidos, páginas nuevas/ocultas, platos ocultos/agotados, navegación, SEO, JSON-LD escapado, IDs únicos y bases `/restaurant-premium-sanity` y `/`.
+- `npm run build`: correcto contra Sanity real, sin fallback demo. Genera las cuatro páginas existentes, 404, sitemap y robots.
+- `npm run check:build`: correcto; descubre todas las páginas generadas y valida enlaces, assets, anclas y canonical.
+- `npm run check:cms`: fuente sanity, estado published, cuatro páginas y once platos.
+- `npm run seed:export`: correcto; solo genera el NDJSON local, sin importación.
+- Studio `npm run check`, `npm test` (6 pruebas) y `npm run build`: correctos.
+- Extracción local de schemas con Sanity CLI: correcta; no se ha desplegado el schema.
+- Chromium real: escritorio, móvil, movimiento reducido, fallback sin View Transitions, ahorro de datos y navegación sin JavaScript. Correctos historial, CTA, anclas, metadatos, fotos, cabecera estable y ausencia de errores JS.
+- Comparación de build real previa/posterior a 390, 768 y 1440 px: textos y geometría del contenido original idénticos en las cuatro páginas, sin desbordamiento horizontal. No se atribuye una comparación píxel a píxel.
+
+No existe script lint en ninguno de los repositorios. No se ha medido Lighthouse/Core Web Vitals ni probado con lector de pantalla. Las pruebas de rutas/bloques nuevos usan fixtures: no equivalen a una publicación editorial real. Pendientes: revisión del Studio actualizado y publicación de una página nueva en un dataset de ensayo tras aprobar las PR.
+
+El propietario confirma que el webhook funciona. Su filtro/dispatch no cambian; no se publica contenido para volver a dispararlo y no se ha efectuado ningún despliegue, merge, importación o escritura en production en esta fase.
+
+## Cierre de fase 1 — comprobaciones posteriores
+
+Las ejecuciones CI [frontend 41100227312](https://github.com/EduardoCR90/restaurant-premium-sanity/actions/runs/41100227312) y [Studio 41100230312](https://github.com/EduardoCR90/studio-salitre-restaurant/actions/runs/41100230312) finalizaron con success. Se volvieron a ejecutar check/tests/build en ambos repositorios y check:build/check:cms en frontend, correctamente, con 14 y seis tests.
+
+Se contrastaron los campos originales proyectados con la lectura inicial: sin cambios, 22 documentos publicados. También se evaluó el GROQ completo con documentos en formato Sanity y una página añadida solo en memoria: diez bloques resueltos, imágenes y referencias correctas, nueva navegación y página oculta excluida. Una build aislada y Chromium verificaron las cinco páginas a 390/768/1440 px, imágenes, h1, ausencia de desbordamientos/errores JS y FAQ/navegación de la página simulada. Las cuatro URLs actuales siguen respondiendo HTTP 200.
+
+El [informe de cierre](docs/phase-1-closeout.md) distingue esta simulación de una publicación editorial real pendiente y proporciona capturas accesibles desde GitHub móvil. No se ha desplegado ninguna vista previa externa ni modificado el CMS. Las comprobaciones del último commit de documentación/capturas deben consultarse también en cada PR.

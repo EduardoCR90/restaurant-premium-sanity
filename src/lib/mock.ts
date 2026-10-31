@@ -1,8 +1,8 @@
-import type { Content } from '../types/content';
+import { contentSchema } from '../types/content';
 const photo = (id: string, alt: string) => ({ url: `https://images.unsplash.com/${id}?auto=format&fit=crop&q=85`, alt });
 const dining = photo('photo-1414235077428-338989a2e8c0', 'Mesa de restaurante con vajilla y copas bajo una luz cálida');
 const dish = photo('photo-1515516969-d4008cc6241a', 'Composición gastronómica de temporada servida en cerámica');
-export const mockContent: Content = {
+export const mockContent = contentSchema.parse({
  settings: { name: 'Salitre', tagline: 'Cocina de origen · Tenerife', concept: 'Una cocina que escucha al territorio. El Atlántico, la huerta y la memoria de las islas se encuentran en una mesa sin prisas.', address: 'Paseo del Atlántico, 18 · 38001 Santa Cruz de Tenerife', email: 'mesa@salitre.example', phone: '+34 000 000 000', isFictional: true, reservationUrl: null, hours: [{ days: 'Miércoles — sábado', time: '13:30–15:30 / 20:00–22:30' }, { days: 'Domingo', time: '13:30–16:00' }, { days: 'Lunes y martes', time: 'Cerrado' }] },
  pages: [
  { slug: 'inicio', eyebrow: 'Tenerife · Islas Canarias', title: 'El origen,\na flor de piel.', intro: 'Un diálogo entre el fuego, la tierra y el Atlántico.', image: dining, seo: { title: 'Salitre — Cocina de origen en Tenerife', description: 'Restaurante ficticio de cocina contemporánea mediterránea y canaria. Descubre Salitre, una mesa abierta al Atlántico.' } },
@@ -26,4 +26,4 @@ export const mockContent: Content = {
  ],
  story: { title:'Una isla.\nMuchas maneras de sentirla.', body:'Salitre nace de una idea sencilla: cocinar lo que nos rodea. Imaginamos una casa donde los pequeños productores tienen nombre, el pan se comparte y cada estación escribe una nueva historia.', philosophy:'Trabajamos con el ritmo de las mareas y de las cosechas. Menos intervención, más intención. Una cocina contemporánea con los pies en la isla y la mirada en el horizonte.', chefName:'Inés Valcárcel', chefBio:'Nuestra chef ficticia regresa a Tenerife tras recorrer cocinas del Mediterráneo. Su propuesta une la precisión del oficio con la generosidad de una mesa familiar.', image:photo('photo-1556910103-1c02745aae4d','Manos trabajando en una cocina profesional') },
  gallery: [dining, dish, photo('photo-1517248135467-4c7edcad34c4','Interior de restaurante con luz cálida y mesas de madera')],
-};
+});

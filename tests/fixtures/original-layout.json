@@ -1,0 +1,82 @@
+{
+  "sourceCommit": "adc9401",
+  "fixture": "demo local sin contenido CMS",
+  "routes": {
+    "index.html": {
+      "sections": [
+        "section:hero wrap",
+        "section:concept wrap",
+        "section:featured wrap",
+        "section:story-preview",
+        "section:reservation-band wrap"
+      ],
+      "headings": [
+        "h1:El origen, a flor de piel.",
+        "h2:Lo extraordinario está en el origen.",
+        "h2:La isla, en tres actos.",
+        "h3:Tomate, higuera y queso de flor",
+        "h3:Cherne, costa y azafrán",
+        "h3:Gofio, leche y miel",
+        "h2:Una isla. Muchas maneras de sentirla.",
+        "h2:Quédate un poco más."
+      ],
+      "textHash": "c1a05e2a56df3a55fce60bfafbd75ff5a976361a5fa9541edf3c668a22cbb920"
+    },
+    "carta/index.html": {
+      "sections": [
+        "section:page-intro wrap",
+        "nav:menu-index",
+        "section:menu-section",
+        "section:menu-section",
+        "section:menu-section",
+        "section:menu-section"
+      ],
+      "headings": [
+        "h1:El paisaje se sirve a la mesa.",
+        "h2:Para comenzar",
+        "h3:Tomate, higuera y queso de flor",
+        "h3:Crudo de medregal",
+        "h3:Papas negras y mojo de brasas",
+        "h2:Tierra y mar",
+        "h3:Cherne, costa y azafrán",
+        "h3:Arroz del Atlántico",
+        "h3:Cochino negro, raíz y memoria",
+        "h2:Un final lento",
+        "h3:Gofio, leche y miel",
+        "h3:Cítricos del patio",
+        "h2:En la copa",
+        "h3:Listán blanco · copa",
+        "h3:Listán negro · botella",
+        "h3:Infusión del jardín"
+      ],
+      "textHash": "b8ab3f6d8f135d72b4fb9dd516148968fa726282f5253996513fe66bfa4220ed"
+    },
+    "restaurante/index.html": {
+      "sections": [
+        "section:page-intro wrap",
+        "section:concept wrap",
+        "section:chef-section wrap",
+        "section:gallery wrap",
+        "section:reservation-band wrap"
+      ],
+      "headings": [
+        "h1:Un lugar al que volver.",
+        "h2:Una isla. Muchas maneras de sentirla.",
+        "h2:Inés Valcárcel",
+        "h2:Luz, materia y calma.",
+        "h2:Quédate un poco más."
+      ],
+      "textHash": "bf2a7073388aec6f85b509b053de488eb9bc35638dccf7362938797705eb7bc2"
+    },
+    "reservas/index.html": {
+      "sections": ["section:page-intro wrap", "section:contact-layout wrap"],
+      "headings": [
+        "h1:Todo empieza con una mesa.",
+        "h2:Nos vemos aquí.",
+        "h3:Cuándo venir",
+        "h3:Dónde encontrarnos"
+      ],
+      "textHash": "f52c50d9b95fc924f1988acfbdaa46918a097a32181fb5dfb262dc3eb414d2da"
+    }
+  }
+}

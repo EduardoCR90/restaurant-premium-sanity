@@ -1,10 +1,14 @@
 ---
+import {siteCopy} from '../lib/editorial';
+import EditorialLink from './EditorialLink.astro';
 import { pathFor } from '../lib/paths';
 import type { Content } from '../types/content';
-interface Props { settings: Content['settings']; homeHref?:string; contactVisible:boolean; }
-const { settings,homeHref,contactVisible } = Astro.props;
+interface Props { content:Content; homeHref?:string; }
+const {content,homeHref} = Astro.props;
+const {settings}=content;
+const copy=siteCopy(settings).footer;
 ---
 <footer class="site-footer wrap">
- <div class="footer-top"><a class="wordmark" href={homeHref ? pathFor(homeHref) : undefined} data-astro-prefetch>{settings.name}</a><p>{settings.tagline}<br/>El lujo de estar aquí.</p>{contactVisible && <a class="text-link" href={pathFor('/reservas/')} data-astro-prefetch>Encuéntranos <span aria-hidden="true">↗</span></a>}</div>
- <div class="footer-bottom"><span>© {new Date().getFullYear()} {settings.name}</span><span>{settings.isFictional ? 'Restaurante ficticio · Proyecto de demostración' : settings.address}</span><a href="#top">Volver arriba ↑</a></div>
+ <div class="footer-top"><a class="wordmark" href={homeHref ? pathFor(homeHref) : undefined} data-astro-prefetch>{settings.name}</a><p>{settings.tagline}<br/>{copy.line}</p><EditorialLink content={content} link={copy.link}/></div>
+ <div class="footer-bottom"><span>© {new Date().getFullYear()} {settings.name}</span><span>{settings.isFictional ? 'Restaurante ficticio · Proyecto de demostración' : settings.address}</span><a href="#top">{copy.backToTop} ↑</a></div>
 </footer>

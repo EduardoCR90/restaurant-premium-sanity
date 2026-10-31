@@ -12,3 +12,5 @@
 - No simules reservas ni formularios enviados. Solo activa el enlace HTTPS del proveedor para contenido real y restaurante no ficticio.
 - Antes de entregar: npm run check, npm test, npm run build, npm run check:build y npm run check:cms; el Studio ejecuta check/build en su propio repositorio. Si faltan red/dependencias, indica exactamente qué no se pudo ejecutar.
 - No despliegues ni configures SiteGround. Trabaja en rama de función y prepara PR; no hagas merge sin indicación.
+
+- Iteración 1: mantener opcionales page.composition, settings.editorial y settings.socialImage. La fixture editorial común y docs/editorial-compatibility.md coordinan el contrato. No materializar defaults en documentos ni convertir composiciones originales a bloques automáticamente.

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import {compositionSchema,siteEditorialSchema} from './editorial';
 import { editorialImage, httpsUrl } from './blocks';
 import { slugSchema } from './routes';
 import { themeSchema, moduleSchema } from './restaurant';
@@ -9,6 +10,7 @@ export const pageSchema = z.object({
  slug: slugSchema,
  status: z.enum(['published','hidden']).default('published'), noindex:z.boolean().default(false),
  showInNavigation:z.boolean().default(true), navigationOrder:z.number().int().default(0), navigationLabel:z.string().nullish(),
+ composition:compositionSchema.nullish(),
  blocks:z.array(z.unknown()).optional(),
  eyebrow: z.string().default(''), title: z.string().min(1), intro: z.string().default(''), image: imageSchema.nullish(), seo: seoSchema,
 });
@@ -20,6 +22,7 @@ export const dishSchema = z.object({
 });
 export const contentSchema = z.object({
  settings: z.object({
+  editorial:siteEditorialSchema.nullish(), socialImage:imageSchema.nullish(),
   theme:themeSchema.default(() => themeSchema.parse({})), modules:z.array(moduleSchema).default([]), logo:imageSchema.nullish(),
   name: z.string().min(1), tagline: z.string().min(1), concept: z.string().min(1), address: z.string().min(1),
   email: z.email(), phone: z.string().min(1), isFictional: z.boolean(),

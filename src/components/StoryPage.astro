@@ -1,5 +1,6 @@
 ---
-import {getPageBySlug} from '../lib/pages';
+import {pageCopy} from '../lib/editorial';
+import EditorialHeading from './EditorialHeading.astro';
 import PageIntro from '../components/PageIntro.astro';
 import Photo from '../components/Photo.astro';
 import ReservationCTA from '../components/ReservationCTA.astro';
@@ -8,12 +9,13 @@ interface Props {data:ContentResult;}
 const {data} = Astro.props;
 const { story, gallery, settings } = data.content;
 const page = data.content.pages.find(p => p.slug === 'restaurante')!;
+const copy=pageCopy(page);
 ---
 
  <PageIntro {...page}/>
  {page.image && <div class="wide-photo wrap"><Photo image={page.image} eager sizes="100vw"/></div>}
- <section class="concept wrap"><p class="eyebrow">Una historia de pertenencia</p><div><h2 class="preserve-lines">{story.title}</h2><p class="body-copy">{story.body}</p><p class="body-copy">{story.philosophy}</p></div></section>
- <section class="chef-section wrap"><div>{story.image && <Photo image={story.image}/>}</div><div><p class="eyebrow">Al frente de la cocina</p><h2>{story.chefName}</h2><p>{story.chefBio}</p>{settings.isFictional && <small>Personaje y trayectoria ficticios para este proyecto.</small>}</div></section>
- <section class="gallery wrap" aria-labelledby="gallery-title"><div class="section-heading"><p class="eyebrow">El arte de recibir</p><h2 id="gallery-title">Luz, materia <em>y calma.</em></h2></div><div class="gallery-composition">{gallery.map((image,index) => <figure><Photo image={image}/><figcaption>0{index+1} — {image.alt}</figcaption></figure>)}</div>{gallery.length === 0 && <p class="empty-state">Próximamente, nuevas miradas a la casa.</p>}</section>
- <ReservationCTA visible={!!getPageBySlug(data.content,'reservas')}/>
+ <section class="concept wrap"><p class="eyebrow">{copy.story.eyebrow}</p><div><h2 class="preserve-lines">{story.title}</h2><p class="body-copy">{story.body}</p><p class="body-copy">{story.philosophy}</p></div></section>
+ <section class="chef-section wrap"><div>{story.image && <Photo image={story.image}/>}</div><div><p class="eyebrow">{copy.chef.eyebrow}</p><h2>{story.chefName}</h2><p>{story.chefBio}</p>{settings.isFictional && <small>Personaje y trayectoria ficticios para este proyecto.</small>}</div></section>
+ <section class="gallery wrap" aria-labelledby="gallery-title"><div class="section-heading"><p class="eyebrow">{copy.gallery.eyebrow}</p><h2 id="gallery-title"><EditorialHeading heading={copy.gallery.heading}/></h2></div><div class="gallery-composition">{gallery.map((image,index) => <figure><Photo image={image}/><figcaption>0{index+1} — {image.alt}</figcaption></figure>)}</div>{gallery.length === 0 && <p class="empty-state">{copy.gallery.empty}</p>}</section>
+ <ReservationCTA content={data.content}/>
 

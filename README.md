@@ -117,3 +117,7 @@ El head ordena charset, viewport, título/descripción/canonical, robots/present
 Las redes pueden cachear una vista previa anterior: tras desplegar, solicita una nueva lectura en el inspector de compartir de la plataforma correspondiente. Que los metadatos y la imagen respondan correctamente no acredita el resultado de todas las apps de mensajería.
 
 `node scripts/check-navigation.mjs` prueba las cuatro páginas en Chromium, historial, CTA, anclas, cabecera estable, metadatos, imágenes, errores JS, fallback sin View Transitions, movimiento reducido, ahorro de datos y navegación sin JS. CI instala Playwright temporalmente fuera del proyecto y usa Chrome ya instalado; no se añade ninguna dependencia al producto o al lockfile. Para reproducirlo: instala playwright@1.56.1 en un directorio temporal, ejecuta npm run build y npm run preview y define PLAYWRIGHT_MODULE con la URL file:// de su index.mjs; CHROME_BIN permite seleccionar el ejecutable. TEST_ORIGIN permite ejecutar el mismo recorrido contra un servidor publicado.
+
+## Compatibilidad editorial — iteración 1
+
+Consulta [el contrato aditivo y el inventario coordinado](docs/editorial-compatibility.md). No requiere migrar documentos ni habilita escrituras del dashboard en production.

@@ -6,4 +6,4 @@ import type {BlockOf} from '../../types/blocks';
 interface Props {block:BlockOf<'menuSection'>; content:Content; index:number;}
 const {block,content,index} = Astro.props;
 ---
-<section class:list={['dynamic-block',`variant-${block.variant}`]}>{block.title && <h2 class="wrap">{block.title}</h2>}<MenuSection {...getMenu(content,block.categoryIds,block.dishIds)} prefix={`block-${index}-`}/></section>
+<section class:list={['dynamic-block',`variant-${block.variant}`]}>{block.title && <h2 class="wrap">{block.title}</h2>}<MenuSection settings={content.settings} {...getMenu(content,block.categoryIds,block.dishIds)} prefix={`block-${index}-`}/></section>

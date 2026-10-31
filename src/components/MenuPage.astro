@@ -9,6 +9,6 @@ const page = data.content.pages.find(p => p.slug === 'carta')!;
 ---
 
  <PageIntro {...page}/>
- <MenuSection {...getMenu(data.content)}/>
+ <MenuSection {...getMenu(data.content)} settings={data.content.settings}/>
 
 

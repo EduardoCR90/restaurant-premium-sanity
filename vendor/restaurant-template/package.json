@@ -1,6 +1,6 @@
 {
   "name": "@restaurant-platform/astro-template",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "engines": {
@@ -29,7 +29,8 @@
   "files": [
     "src",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "template.release.json"
   ],
   "exports": {
     "./config": "./src/lib/config.ts",
@@ -41,6 +42,7 @@
     "./layouts/*.astro": "./src/layouts/*.astro",
     "./styles/*": "./src/styles/*",
     "./ops/evidence": "./src/ops/evidence.ts",
-    "./ops/report-deployment": "./src/ops/report-deployment.mjs"
+    "./ops/report-deployment": "./src/ops/report-deployment.mjs",
+    "./platform": "./src/types/platform.ts"
   }
 }

@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import { writeFile } from "node:fs/promises";
+import { templateIdentity } from "./template-evidence.mjs";
 export function fingerprint(
   project: string,
   dataset: string,
@@ -56,6 +57,9 @@ export async function recordDeploymentEvidence(
       attempt: process.env.GITHUB_RUN_ATTEMPT,
       sha: process.env.GITHUB_SHA,
       fingerprints: evidence(project, dataset, raw),
+      ...(process.env.TEMPLATE_VERSION_TRACKING === "true"
+        ? { template: await templateIdentity() }
+        : {}),
     }),
     { mode: 0o600 },
   );

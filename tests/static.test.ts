@@ -27,6 +27,7 @@ test(
     try {
       for (const name of [
         "src",
+        "scripts",
         "public",
         "astro.config.mjs",
         "package.json",

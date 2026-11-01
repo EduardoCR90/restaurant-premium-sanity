@@ -1,3 +1,4 @@
+import { recordDeploymentEvidence } from '../../scripts/deployment-evidence';
 import { contentSchema, type ContentResult } from '../types/content';
 import { mockContent } from './mock';
 import { restaurantQuery } from './queries';
@@ -10,7 +11,10 @@ async function load(): Promise<ContentResult> {
     return { content: contentSchema.parse(mockContent), source: 'demo', cmsStatus: 'disabled' };
   }
   try {
-    const result = resolvePublishedContent(await createContentClient().fetch<unknown>(restaurantQuery));
+    const raw = await createContentClient().fetch<unknown>(restaurantQuery);
+    // Misma respuesta GROQ que genera el HTML. Solo huellas, nunca documentos ni tokens.
+    await recordDeploymentEvidence(import.meta.env.SANITY_PROJECT_ID || 'hfa8zkyw', import.meta.env.SANITY_DATASET || 'production', raw);
+    const result = resolvePublishedContent(raw);
     console.info(`[content] Sanity: ${result.cmsStatus === 'empty' ? 'dataset accesible sin contenido publicado; demo visible' : 'contenido publicado validado'}.`);
     return result;
   } catch {

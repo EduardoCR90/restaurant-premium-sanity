@@ -12,6 +12,10 @@ El 30 de octubre de 2026 se verificó lectura de los 22 documentos publicados en
 
 Para revisar exclusivamente desde el móvil, consulta el [cierre de fase 1 y sus capturas](docs/phase-1-closeout.md). Incluye el estado de Actions, el ensayo editorial aislado y el orden de integración/publicación.
 
+## Iteración 4 — Seguimiento de publicación
+
+El propietario ha validado Dashboard → Sanity production → Astro. Se conserva el disparador existente y se añade [seguimiento verificable del despliegue](docs/publication-tracking.md), con evidencia de las revisiones y OIDC GitHub. No se modifican documentos reales para probarlo.
+
 ## Instalación desde otro ordenador
 
 Requiere Node.js 22.22+ (recomendado Node 22 LTS) y npm.

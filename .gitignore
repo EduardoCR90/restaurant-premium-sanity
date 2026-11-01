@@ -11,3 +11,5 @@ coverage/
 studio-dist/
 audit.json
 review/
+
+.publication-build.json

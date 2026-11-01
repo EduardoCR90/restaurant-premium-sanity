@@ -1,7 +1,7 @@
 # Convenciones de Salitre
 
 - Lee README.md antes de modificar el proyecto. Mantén Astro estático y TypeScript estricto.
-- Componentes visuales en src/components; datos y consultas solo en src/lib; contratos en src/types; esquemas únicamente en EduardoCR90/studio-salitre-restaurant/schemaTypes. Las páginas no consultan directamente al SDK.
+- Componentes/layouts/estilos/contratos compartidos en restaurant-astro-template y su distribución generada vendor/restaurant-template; src/lib y src/types solo conectan o reexportan; esquemas únicamente en EduardoCR90/studio-salitre-restaurant/schemaTypes. Las páginas no consultan directamente al SDK.
 - Idioma del sitio y contenido de ejemplo: español. Mantén avisos de restaurante ficticio y noindex en demo.
 - Dirección de arte: marfil, carbón, terracota, serif editorial, espacio negativo, composiciones asimétricas. Evita cards genéricas, sombras y degradados.
 - Mobile first, HTML semántico, un h1 por página, navegación por teclado, foco visible, imágenes con alt y dimensiones, soporte de movimiento reducido. No añadas JS del cliente sin necesidad.
@@ -14,3 +14,5 @@
 - No despliegues ni configures SiteGround. Trabaja en rama de función y prepara PR; no hagas merge sin indicación.
 
 - Iteración 1: mantener opcionales page.composition, settings.editorial y settings.socialImage. La fixture editorial común y docs/editorial-compatibility.md coordinan el contrato. No materializar defaults en documentos ni convertir composiciones originales a bloques automáticamente.
+
+- Fase 5: no editar vendor ni duplicar renderers/modelos locales. Identidad y fallback histórico solo en restaurant.config.ts y src/instance. Actualizar por tag/commit con el script documentado; ejecutar npm run template:verify. Mantener las comprobaciones de compatibilidad, la base Pages y los informes OIDC.

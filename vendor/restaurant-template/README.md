@@ -34,12 +34,16 @@ Existing logical page compositions continue to work when their CMS blocks are ab
 
 ## Distribution
 
-Package: `@restaurant-platform/astro-template`, current version `0.2.0`, tagged `v0.2.0` after CI and merge. Private Git source is the authority; no public npm publishing or credentials in restaurant builds.
+Package: `@restaurant-platform/astro-template`, current version `0.3.0`, tagged `v0.3.0` after CI and merge. Private Git source is the authority; no public npm publishing or credentials in restaurant builds.
 
 Instances install `file:vendor/restaurant-template`, generated from an immutable upstream commit. `template.lock.json` records version, repository, commit and every distributed file's SHA-256. CI checks this manifest; edits to generated code stop updates rather than being overwritten. This is a controlled package distribution, not an independently maintained fork. Restaurant overrides stay in configuration, CMS and local assets.
 
-The initial shared contract is compatible with the existing Studio/dashboard models. Adding variants is a later iteration; enabling new CMS fields must be coordinated with their authoritative schemas.
+The shared contract is compatible with the existing Studio/dashboard models. CMS changes remain coordinated with their authoritative schemas; layout and content contracts are versioned explicitly.
 
 ## Visual themes and composition
 
 [Presets, variants, optional visibility and safe rollout](docs/themes.md). Elegant, Modern and Casual are configurable through the existing dashboard/CMS contract. Legacy instances without a preset retain their design.
+
+## Platform governance
+
+[Controlled instance updates, permissions boundary and provisioning contracts](docs/platform-governance.md). Version 0.3.0 preserves the visual/content contracts of 0.2.0.

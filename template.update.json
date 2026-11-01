@@ -1,0 +1,19 @@
+{
+  "format": 1,
+  "template_key": "restaurant-editorial",
+  "from_version": "0.2.0",
+  "from_commit": "7340551f48a5f95e75d035ff70fb5c93f18d919a",
+  "to_version": "0.3.0",
+  "to_commit": "069dcf48778d9f2eb18ca7176b4da97fd60d5237",
+  "source_instance_commit": "4965f7fe3dbfa114768b7e0d30db4b580b568b6b",
+  "distribution_hash": "b6a3cfc5ae64bf4b5484a116b9808db7996f02580eb3f29f069a00668025be6a",
+  "package_lock_hash": "c74f0deccae64f04916d39e55e3e5d72a8d473ca3212f1e0cce144d9a378c101",
+  "checks": [
+    "template:verify",
+    "check",
+    "test",
+    "build",
+    "check:build"
+  ],
+  "status": "validated-not-deployed"
+}

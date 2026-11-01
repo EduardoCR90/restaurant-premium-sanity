@@ -1,7 +1,8 @@
 import { readFile, appendFile } from "node:fs/promises";
+import { templateIdentity } from "./template-evidence.mjs";
 import { pathToFileURL } from "node:url";
 
-/** @param {(path: string, encoding: 'utf8') => Promise<string>} [read] */
+/** @param {(path: string, encoding?: 'utf8') => Promise<string | Uint8Array>} [read] */
 export async function reportDeployment(
   phase,
   env = process.env,
@@ -14,6 +15,7 @@ export async function reportDeployment(
   if (!["building", "ready", "succeeded", "failed"].includes(phase))
     throw new Error("Invalid phase");
   let fingerprints = [];
+  let template;
   if (phase !== "building") {
     try {
       const data = JSON.parse(await read(".publication-build.json", "utf8"));
@@ -29,6 +31,14 @@ export async function reportDeployment(
       )
         throw new Error("Evidence mismatch");
       fingerprints = data.fingerprints;
+      if (
+        env.TEMPLATE_VERSION_TRACKING === "true" &&
+        ["ready", "succeeded"].includes(phase)
+      ) {
+        template = await templateIdentity(read);
+        if (JSON.stringify(template) !== JSON.stringify(data.template))
+          throw new Error("Template build evidence mismatch");
+      }
     } catch (error) {
       if (error.code !== "ENOENT")
         throw new Error("Evidencia de build no válida");
@@ -59,7 +69,12 @@ export async function reportDeployment(
       Authorization: `Bearer ${value}`,
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ action: "deployment_report", phase, fingerprints }),
+    body: JSON.stringify({
+      action: "deployment_report",
+      phase,
+      fingerprints,
+      ...(template ? { template } : {}),
+    }),
     signal: AbortSignal.timeout(20000),
     redirect: "error",
   });

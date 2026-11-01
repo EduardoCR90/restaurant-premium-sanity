@@ -129,3 +129,7 @@ Las redes pueden cachear una vista previa anterior: tras desplegar, solicita una
 ## Compatibilidad editorial — iteración 1
 
 Consulta [el contrato aditivo y el inventario coordinado](docs/editorial-compatibility.md). No requiere migrar documentos ni habilita escrituras del dashboard en production.
+
+## Fase 5 cerrada
+
+Template v0.3.0, compatibilidad explícita y actualización validada en aislamiento. La identidad del template desplegado se confirma mediante el mismo flujo OIDC de publicación. [Operación y límites](docs/shared-template.md). No se migran contenidos ni se cambia el diseño.

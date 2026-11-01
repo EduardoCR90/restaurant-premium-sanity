@@ -11,7 +11,7 @@ const environment = (env) => ({
   DEPLOYMENT_REPORT_URL:
     env.DEPLOYMENT_REPORT_URL || restaurantConfig.deployment.reportEndpoint,
 });
-/** @param {(path:string,encoding:'utf8')=>Promise<string>} [read] */
+/** @param {(path:string,encoding?:'utf8')=>Promise<string | Uint8Array>} [read] */
 export function reportDeployment(
   phase,
   env = process.env,

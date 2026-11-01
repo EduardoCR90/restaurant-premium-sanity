@@ -31,6 +31,7 @@ jobs:
       deploy_required: ${{ steps.tracking.outputs.deploy_required }}
     env:
       PUBLICATION_TRACKING: 'true'
+      TEMPLATE_VERSION_TRACKING: 'true'
       SITE_URL: https://eduardocr90.github.io
       SANITY_PROJECT_ID: ${{ vars.SANITY_PROJECT_ID || 'hfa8zkyw' }}
       SANITY_DATASET: ${{ vars.SANITY_DATASET || 'production' }}
@@ -125,6 +126,8 @@ jobs:
           JS
 
   report:
+    env:
+      TEMPLATE_VERSION_TRACKING: 'true'
     if: always() && github.ref == 'refs/heads/main'
     needs: [build, deploy]
     runs-on: ubuntu-latest

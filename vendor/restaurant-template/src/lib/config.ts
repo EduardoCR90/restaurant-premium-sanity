@@ -2,7 +2,7 @@ import { resolveVisualTheme, variantDefaultsSchema } from "../types/visual";
 import { z } from "zod";
 import { themeSchema } from "../types/restaurant";
 import { compositionSchema, siteEditorialSchema } from "../types/editorial";
-export const TEMPLATE_VERSION = "0.2.0";
+export const TEMPLATE_VERSION = "0.3.0";
 const localAsset = z
   .string()
   .regex(/^\/(?!\/)[a-zA-Z0-9/_\-.]+$/)

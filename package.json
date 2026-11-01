@@ -15,7 +15,7 @@
     "seed:export": "tsx scripts/export-seed.ts",
     "check:build": "node scripts/check-build.mjs",
     "check:cms": "tsx scripts/check-cms.ts",
-    "template:verify": "node scripts/template-distribution.mjs verify"
+    "template:verify": "node scripts/template-distribution.mjs verify && node scripts/check-template-compatibility.mjs"
   },
   "dependencies": {
     "@sanity/client": "^7.11.0",

@@ -1,4 +1,6 @@
 ---
+import Gallery from './Gallery.astro';
+import {sectionEnabled} from '../lib/editorial';
 import {pageCopy} from '../lib/editorial';
 import EditorialHeading from './EditorialHeading.astro';
 import PageIntro from '../components/PageIntro.astro';
@@ -13,9 +15,9 @@ const copy=pageCopy(page);
 ---
 
  <PageIntro {...page}/>
- {page.image && <div class="wide-photo wrap"><Photo image={page.image} eager sizes="100vw"/></div>}
- <section class="concept wrap"><p class="eyebrow">{copy.story.eyebrow}</p><div><h2 class="preserve-lines">{story.title}</h2><p class="body-copy">{story.body}</p><p class="body-copy">{story.philosophy}</p></div></section>
- <section class="chef-section wrap"><div>{story.image && <Photo image={story.image}/>}</div><div><p class="eyebrow">{copy.chef.eyebrow}</p><h2>{story.chefName}</h2><p>{story.chefBio}</p>{settings.isFictional && <small>Personaje y trayectoria ficticios para este proyecto.</small>}</div></section>
- <section class="gallery wrap" aria-labelledby="gallery-title"><div class="section-heading"><p class="eyebrow">{copy.gallery.eyebrow}</p><h2 id="gallery-title"><EditorialHeading heading={copy.gallery.heading}/></h2></div><div class="gallery-composition">{gallery.map((image,index) => <figure><Photo image={image}/><figcaption>0{index+1} — {image.alt}</figcaption></figure>)}</div>{gallery.length === 0 && <p class="empty-state">{copy.gallery.empty}</p>}</section>
- <ReservationCTA content={data.content}/>
+ {page.image && sectionEnabled(page,'hero') && <div class="wide-photo wrap"><Photo image={page.image} eager sizes="100vw"/></div>}
+ {sectionEnabled(page,'story') && <section class="concept wrap"><p class="eyebrow">{copy.story.eyebrow}</p><div><h2 class="preserve-lines">{story.title}</h2><p class="body-copy">{story.body}</p><p class="body-copy">{story.philosophy}</p></div></section>}
+ {sectionEnabled(page,'chef') && <section class="chef-section wrap"><div>{story.image && <Photo image={story.image}/>}</div><div><p class="eyebrow">{copy.chef.eyebrow}</p><h2>{story.chefName}</h2><p>{story.chefBio}</p>{settings.isFictional && <small>Personaje y trayectoria ficticios para este proyecto.</small>}</div></section>}
+ {sectionEnabled(page,'gallery') && <section class="gallery wrap" aria-labelledby="gallery-title"><div class="section-heading"><p class="eyebrow">{copy.gallery.eyebrow}</p><h2 id="gallery-title"><EditorialHeading heading={copy.gallery.heading}/></h2></div><Gallery images={gallery} numbered variant={settings.theme.gallery}/>{gallery.length === 0 && <p class="empty-state">{copy.gallery.empty}</p>}</section>}
+ {sectionEnabled(page,'reservation') && <ReservationCTA content={data.content}/>}
 

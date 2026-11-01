@@ -23,9 +23,18 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run check:build
+      - uses: actions/checkout@v4
+        with:
+          ref: 23f9a2332d8d0dc49598abf80865a395bda32c17
+          path: .visual-baseline
+          persist-credentials: false
+      - name: Build the pinned pre-variant baseline with demo data only
+        working-directory: .visual-baseline
+        run: npm ci --no-audit --no-fund && ASTRO_TELEMETRY_DISABLED=1 npm run build
       - name: Browser navigation, history and reduced motion
         run: |
           npm install --prefix "$RUNNER_TEMP/salitre-browser" playwright@1.56.1 --no-save --ignore-scripts --no-audit --no-fund
+          PLAYWRIGHT_MODULE="file://$RUNNER_TEMP/salitre-browser/node_modules/playwright/index.mjs" CHROME_BIN=/usr/bin/google-chrome VISUAL_BASELINE_DIR=.visual-baseline/dist node scripts/check-visual.mjs
           ASTRO_TELEMETRY_DISABLED=1 npm run preview -- --host 127.0.0.1 --background
           PLAYWRIGHT_MODULE="file://$RUNNER_TEMP/salitre-browser/node_modules/playwright/index.mjs" CHROME_BIN=/usr/bin/google-chrome node scripts/check-navigation.mjs
           ASTRO_TELEMETRY_DISABLED=1 npx astro preview stop

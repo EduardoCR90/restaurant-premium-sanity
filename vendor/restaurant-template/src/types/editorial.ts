@@ -1,3 +1,4 @@
+import {sectionFlagsSchema} from './visual';
 import { z } from "zod";
 import { linkSchema } from "./blocks";
 export const headingSchema = z
@@ -11,6 +12,7 @@ export const headingSchema = z
     "El titular debe contener texto",
   );
 export const compositionSchema = z.object({
+ sections:sectionFlagsSchema.nullish(),
   hero: z
     .object({
       caption: z.string().trim().min(1).max(20000).nullish(),

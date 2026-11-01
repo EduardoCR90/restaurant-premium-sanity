@@ -116,3 +116,5 @@ export function visibleEditorialLink(
   const slug = route || "inicio";
   return content.pages.some((p) => p.slug === slug && p.status === "published");
 }
+
+export function sectionEnabled(page:Content['pages'][number],section:import('../types/visual').SectionName){return page.composition?.sections?.[section]!==false;}

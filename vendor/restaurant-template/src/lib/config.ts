@@ -1,7 +1,8 @@
+import { resolveVisualTheme, variantDefaultsSchema } from "../types/visual";
 import { z } from "zod";
 import { themeSchema } from "../types/restaurant";
 import { compositionSchema, siteEditorialSchema } from "../types/editorial";
-export const TEMPLATE_VERSION = "0.1.1";
+export const TEMPLATE_VERSION = "0.2.0";
 const localAsset = z
   .string()
   .regex(/^\/(?!\/)[a-zA-Z0-9/_\-.]+$/)
@@ -73,23 +74,7 @@ export const restaurantConfiguration = z.object({
   requiredSlugs: z
     .array(z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/))
     .default([]),
-  variants: z
-    .partialRecord(
-      z.enum([
-        "hero",
-        "richText",
-        "imageText",
-        "galleryBlock",
-        "menuSection",
-        "cards",
-        "cta",
-        "faq",
-        "divider",
-        "notice",
-      ]),
-      z.enum(["editorial", "compact"]),
-    )
-    .default({}),
+  variants: variantDefaultsSchema.default({}),
   deployment: z
     .object({
       provider: z.enum(["github-pages", "static"]),
@@ -113,7 +98,7 @@ export function resolveConfiguration(
   env: BuildEnvironment = {},
 ) {
   // Parse on each call, without mutation or a global tenant cache. Secrets never enter this object.
-  return restaurantConfiguration.parse({
+  const result = restaurantConfiguration.parse({
     ...input,
     site: {
       ...input.site,
@@ -126,6 +111,8 @@ export function resolveConfiguration(
       ...(env.SANITY_DATASET ? { dataset: env.SANITY_DATASET } : {}),
     },
   });
+  result.theme = resolveVisualTheme(input.theme);
+  return result;
 }
 export function environmentFlag(value: string | undefined) {
   if (value === undefined || value === "false") return false;

@@ -5,4 +5,4 @@ import type {BlockOf} from '../../types/blocks';
 interface Props {block:BlockOf<'hero'>;}
 const {block} = Astro.props;
 ---
-<section class:list={['dynamic-block','block-hero','wrap',`align-${block.alignment}`,`variant-${block.variant}`]}><h2>{block.title}</h2>{block.subtitle && <p>{block.subtitle}</p>}{block.image && <Photo image={block.image}/>} {block.cta && <BlockLink link={block.cta}/>}</section>
+<section class:list={['dynamic-block','block-hero','wrap',`align-${block.alignment}`,`variant-${block.variant}`]}><h2>{block.title}</h2>{block.subtitle && <p>{block.subtitle}</p>}{block.image && <Photo image={block.image} eager/>} {block.cta && <BlockLink link={block.cta}/>}</section>

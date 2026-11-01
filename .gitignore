@@ -15,3 +15,5 @@ review/
 .publication-build.json
 
 .template-test-*/
+
+.visual-baseline/

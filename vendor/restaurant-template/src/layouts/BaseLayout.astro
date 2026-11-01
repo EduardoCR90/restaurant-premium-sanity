@@ -20,7 +20,7 @@ const socialAlt = cmsSocialImage?.alt || fallback.alt.replaceAll('{name}',settin
 const demo = data.source === 'demo' || settings.isFictional || canonical.hostname.endsWith('.example');
 ---
 <!doctype html>
-<html lang="es" style={themeVariables(settings.theme)} data-theme={settings.theme.name} data-button={settings.theme.button} data-cards={settings.theme.cards} transition:animate="none">
+<html lang="es" style={themeVariables(settings.theme)} data-theme={settings.theme.name} data-preset={settings.theme.preset} data-button={settings.theme.button} data-cards={settings.theme.cards} transition:animate="none">
 <head>
  <!-- Codificación y viewport primero; metadatos esenciales antes de recursos y scripts. -->
  <meta charset="UTF-8"/>
@@ -59,7 +59,7 @@ const demo = data.source === 'demo' || settings.isFictional || canonical.hostnam
  <ClientRouter fallback="animate"/>
 </head><body id="top">
  <a class="skip-link" href="#contenido">Saltar al contenido</a>
- <Header signature={siteCopy(settings).signature} name={settings.name} links={getNavigation(data.content)} logo={settings.logo} homeHref={getHomeHref(data.content)}/>
+ <Header variant={settings.theme.header} signature={siteCopy(settings).signature} name={settings.name} links={getNavigation(data.content)} logo={settings.logo} homeHref={getHomeHref(data.content)}/>
  {data.source === 'demo' && <aside class="demo-notice">{data.warning || 'Proyecto de demostración · Restaurante y datos ficticios · Reservas no activas'}</aside>}
  <main id="contenido" transition:name="page-content" transition:animate={fade({ duration: '300ms' })}><slot/></main>
  <Footer content={data.content} homeHref={getHomeHref(data.content)}/>

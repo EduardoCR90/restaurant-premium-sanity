@@ -1,6 +1,6 @@
 # Fase 5 · Iteración 1 — Template compartido
 
-Salitre consume `@restaurant-platform/astro-template` 0.1.1. Su fuente es el repositorio privado [restaurant-astro-template](https://github.com/EduardoCR90/restaurant-astro-template). No se reescribe la web ni se migran documentos.
+Salitre consume `@restaurant-platform/astro-template` 0.2.0. Su fuente es el repositorio privado [restaurant-astro-template](https://github.com/EduardoCR90/restaurant-astro-template). No se reescribe la web ni se migran documentos.
 
 ## Separación
 
@@ -21,8 +21,8 @@ La distribución hereda la visibilidad de este repositorio; un upstream privado 
 
 Para actualizar de forma controlada:
 
-1. Revisar la release y CI del template. Clonar con acceso autorizado y hacer checkout del tag, por ejemplo `v0.1.1`.
-2. Desde esta instancia: `node scripts/template-distribution.mjs sync /ruta/restaurant-astro-template v0.1.1`. Se comprueba origen, commit/tag, limpieza del código fuente e integridad de la distribución actual. Si alguien ha editado vendor, se detiene sin sobrescribir esos cambios.
+1. Revisar la release y CI del template. Clonar con acceso autorizado y hacer checkout del tag, por ejemplo `v0.2.0`.
+2. Desde esta instancia: `node scripts/template-distribution.mjs sync /ruta/restaurant-astro-template v0.2.0`. Se comprueba origen, commit/tag, limpieza del código fuente e integridad de la distribución actual. Si alguien ha editado vendor, se detiene sin sobrescribir esos cambios.
 3. Ejecutar `npm install --package-lock-only --ignore-scripts`, `npm ci`, `npm run template:verify`, `npm run check`, `npm test`, `npm run build` y `npm run check:build`.
 4. Revisar navegación/fotos/SEO y las composiciones históricas; integrar la PR solo con CI aprobada.
 
@@ -41,3 +41,11 @@ Los tests existentes comparan estructura y texto del HTML con las composiciones 
 La siguiente iteración añadirá variantes y composición configurable más rica. No se han creado Burger House ni recursos de nuevos restaurantes.
 
 La comparación local contra la versión anterior 7dd776b verificó geometría, colores y tipografías en las cuatro rutas a 390 y 1440 px (imágenes sintéticas para aislar la red). Las fotos originales y las transiciones se comprueban además en el recorrido de navegador existente.
+
+## Variantes y compatibilidad de Salitre
+
+La versión 0.2.0 añade presets Elegant, Modern y Casual, tokens de color/fuentes/espaciado/botones y variantes para hero, carta, destacados, galería, CTA, cabecera y footer. Sin preset, la configuración local y los campos CMS anteriores mantienen su prioridad y aspecto. No se modifica ningún documento durante la actualización.
+
+El dashboard puede gestionar visibilidad de bloques y secciones históricas sin convertir las cuatro páginas a un sistema nuevo. Guardar/publicar conserva el seguimiento OIDC y la reconstrucción existente. No se añade un segundo webhook ni migración.
+
+CI construye también el commit pre-variantes `23f9a2332d8d0dc49598abf80865a395bda32c17` con demo y ejecuta `scripts/check-visual.mjs`: ocho comparaciones (cuatro rutas × móvil/escritorio) de geometría, tipografía, color y PNG exacto. Las fotos se sustituyen solo en el navegador de prueba por SVG sintético; no se consulta ni escribe contenido privado. Para reproducir con ambas builds, definir `VISUAL_BASELINE_DIR`, `PLAYWRIGHT_MODULE` y `CHROME_BIN` y ejecutar el script. Las capturas se guardan en `review/`.

@@ -3,7 +3,7 @@ import {
   type Content,
   type ContentResult,
 } from "../types/content";
-import { themeSchema } from "../types/restaurant";
+import { resolveVisualTheme } from "../types/visual";
 import { inherit, originalDefaults } from "./editorial";
 import { resolvePublishedContent } from "./published-content";
 import { createContentClient } from "./sanity.server";
@@ -33,20 +33,37 @@ export function preparePresentation(
     editorial: inherit(originalDefaults.editorial, config.editorial.site),
   };
   const rawTheme = record(record(record(raw).settings).theme);
+  const theme = resolveVisualTheme(rawTheme, config.theme);
   return {
     ...content,
     settings: {
       ...content.settings,
-      theme: themeSchema.parse({ ...config.theme, ...rawTheme }),
+      theme,
       editorial: inherit(defaults.editorial, content.settings.editorial),
     },
     pages: content.pages.map((p) => ({
       ...p,
-      composition: inherit(defaults.composition, p.composition),
+      composition: {
+        ...inherit(defaults.composition, p.composition),
+        sections: {
+          ...config.editorial.composition?.sections,
+          ...p.composition?.sections,
+        },
+      },
       blocks: p.blocks?.map((b) => {
         const block = record(b);
+        const component = (
+          {
+            hero: "hero",
+            menuSection: "menu",
+            galleryBlock: "gallery",
+            cards: "featured",
+            cta: "cta",
+          } as Record<string, "hero" | "menu" | "gallery" | "featured" | "cta">
+        )[String(block._type)];
         const variant =
-          config.variants[block._type as keyof typeof config.variants];
+          config.variants[block._type as keyof typeof config.variants] ||
+          (component ? theme[component] : undefined);
         return variant && block.variant == null ? { ...block, variant } : b;
       }),
     })),

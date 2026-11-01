@@ -1,3 +1,4 @@
+import {resolveVisualTheme} from './visual';
 import { z } from 'zod';
 import {compositionSchema,siteEditorialSchema} from './editorial';
 import { editorialImage, httpsUrl } from './blocks';
@@ -23,7 +24,7 @@ export const dishSchema = z.object({
 export const contentSchema = z.object({
  settings: z.object({
   editorial:siteEditorialSchema.nullish(), socialImage:imageSchema.nullish(),
-  theme:themeSchema.default(() => themeSchema.parse({})), modules:z.array(moduleSchema).default([]), logo:imageSchema.nullish(),
+  theme:z.preprocess(value=>resolveVisualTheme(value),themeSchema).default(() => themeSchema.parse({})), modules:z.array(moduleSchema).default([]), logo:imageSchema.nullish(),
   name: z.string().min(1), tagline: z.string().min(1), concept: z.string().min(1), address: z.string().min(1),
   email: z.email(), phone: z.string().min(1), isFictional: z.boolean(),
   reservationUrl: safeUrl.nullish(), hours: z.array(z.object({ days: z.string().min(1), time: z.string().min(1) })),

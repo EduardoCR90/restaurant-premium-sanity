@@ -27,6 +27,8 @@ test(
     try {
       for (const name of [
         "src",
+        "restaurant.config.ts",
+        "vendor",
         "scripts",
         "public",
         "astro.config.mjs",
@@ -157,8 +159,8 @@ test(
       await writeFile(
         contentFile,
         (await readFile(contentFile, "utf8")).replace(
-          "source: 'demo'",
-          "source: 'sanity'",
+          /export const getContent\s*=\s*loader.getContent;/,
+          "export const getContent=async()=>({...await loader.getContent(),source:'sanity' as const});",
         ),
       );
       await writeFile(

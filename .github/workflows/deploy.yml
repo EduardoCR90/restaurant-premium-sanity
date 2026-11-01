@@ -50,7 +50,7 @@ jobs:
         uses: withastro/action@v6
         with:
           node-version: 22
-          build-cmd: npm run check && npm test && npm run build && npm run check:build
+          build-cmd: npm run template:verify && npm run check && npm test && npm run build && npm run check:build
 
       - name: Record build result
         id: tracking

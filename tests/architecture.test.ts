@@ -1,4 +1,5 @@
 import {test} from 'node:test';
+import {restaurantConfig} from '../restaurant.config';
 import assert from 'node:assert/strict';
 import {mockContent} from '../src/lib/mock';
 import {contentSchema,pageSchema} from '../src/types/content';
@@ -66,7 +67,7 @@ test('avisos vigentes se evalúan en build, con final exclusivo y fechas válida
 });
 
 test('tema inicial compatible, variantes seguras y preferencias sin autorización',()=>{
- const theme=themeSchema.parse({});
+ const theme=themeSchema.parse(restaurantConfig.theme);
  assert.equal(theme.paper,'#ece8df');
  assert.equal(theme.accent,'#95462f');
  assert.ok(themeVariables(theme).includes('Georgia'));

@@ -16,6 +16,10 @@ Para revisar exclusivamente desde el móvil, consulta el [cierre de fase 1 y sus
 
 El propietario ha validado Dashboard → Sanity production → Astro. Se conserva el disparador existente y se añade [seguimiento verificable del despliegue](docs/publication-tracking.md), con evidencia de las revisiones y OIDC GitHub. No se modifican documentos reales para probarlo.
 
+## Fase 5 · Template compartido
+
+Salitre utiliza la versión fijada del [template Astro compartido](docs/shared-template.md), manteniendo su configuración, contenido y assets propios. La distribución se verifica en CI y no requiere credenciales del repositorio privado para compilar.
+
 ## Instalación desde otro ordenador
 
 Requiere Node.js 22.22+ (recomendado Node 22 LTS) y npm.
@@ -23,8 +27,7 @@ Requiere Node.js 22.22+ (recomendado Node 22 LTS) y npm.
 ```bash
 git clone https://github.com/EduardoCR90/restaurant-premium-sanity.git
 cd restaurant-premium-sanity
-# Cambia a la rama de la implementación si todavía no se ha integrado en main.
-git switch codex/phase-1-dynamic-blocks
+git switch main
 npm ci
 cp .env.example .env
 npm run dev
@@ -47,13 +50,14 @@ npm run check:cms     # Lectura real: valida contenido o detecta dataset vacío
 
 ```text
 src/
-  components/     Composiciones originales, MenuSection y blocks/registry.ts
-  layouts/        BaseLayout: HTML, SEO, navegación y aviso demo
+  instance/       Textos históricos exclusivos de Salitre
   pages/          [...slug], 404, robots.txt, sitemap.xml
-  styles/         global.css: tokens, capas CSS y responsive
   lib/            Acceso Sanity, adaptadores, páginas, carta y resolución de bloques
   types/          Contratos Zod y tipos inferidos
-scripts/          Exportador NDJSON de contenido inicial
+restaurant.config.ts  Configuración tipada de esta instancia
+vendor/restaurant-template/  Presentación y contratos compartidos (generados)
+template.lock.json      Versión, commit e integridad de distribución
+scripts/          Exportador NDJSON y verificación/actualización del template
 public/           Favicon
 tests/           Validación de contratos y URLs
 .github/workflows/validate.yml, deploy.yml

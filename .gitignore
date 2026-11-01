@@ -13,3 +13,5 @@ audit.json
 review/
 
 .publication-build.json
+
+.template-test-*/

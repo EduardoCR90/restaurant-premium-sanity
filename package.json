@@ -14,12 +14,14 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "seed:export": "tsx scripts/export-seed.ts",
     "check:build": "node scripts/check-build.mjs",
-    "check:cms": "tsx scripts/check-cms.ts"
+    "check:cms": "tsx scripts/check-cms.ts",
+    "template:verify": "node scripts/template-distribution.mjs verify"
   },
   "dependencies": {
     "@sanity/client": "^7.11.0",
     "astro": "^7.4.1",
-    "zod": "^4.6.7"
+    "zod": "^4.6.7",
+    "@restaurant-platform/astro-template": "file:vendor/restaurant-template"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
